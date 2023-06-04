@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "name": "rbf-server",
+  "description": "Front-end application to manage a development environment for web developers",
+  "version": "1.0.0",
+  "author": "RBFraphael <rbfraphael@gmail.com>",
+  "main": "app/background.js",
+  "scripts": {
+    "dev": "nextron",
+    "build": "nextron build",
+    "build:win64": "nextron build --win --x64",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.13.3",
+    "electron-serve": "^1.1.0",
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^21.3.3",
+    "electron-builder": "^23.6.0",
+    "next": "^12.3.4",
+    "nextron": "^8.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

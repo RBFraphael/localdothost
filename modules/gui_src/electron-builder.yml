@@ -1,0 +1,12 @@
+appId: com.rbfraphael.localdothost
+productName: Local.Host
+copyright: Copyright © 2023 RBFraphael
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null
