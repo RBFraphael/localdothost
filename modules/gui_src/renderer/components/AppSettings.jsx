@@ -8,6 +8,7 @@ export default function AppSettings()
 
     const [autostartApache, setAutostartApache] = useState(false);
     const [autostartMariaDb, setAutostartMariaDb] = useState(false);
+    const [autostartMongoDb, setAutostartMongoDb] = useState(false);
 
     useEffect(() => {
         let appSettingsJson = localStorage.getItem("settings");
@@ -15,6 +16,7 @@ export default function AppSettings()
             let appSettings = JSON.parse(appSettingsJson);
             setAutostartApache(appSettings.autostart?.apache ?? false);
             setAutostartMariaDb(appSettings.autostart?.mariadb ?? false);
+            setAutostartMongoDb(appSettings.autostart?.mongodb ?? false);
             setColorMode(appSettings.theme ?? colorMode);
         }
     }, []);
@@ -23,12 +25,13 @@ export default function AppSettings()
         let appSettings = {
             autostart: {
                 apache: autostartApache,
-                mariadb: autostartMariaDb
+                mariadb: autostartMariaDb,
+                mongodb: autostartMongoDb,
             },
             theme: colorMode
         };
         localStorage.setItem("settings", JSON.stringify(appSettings));
-    }, [autostartApache, autostartMariaDb, colorMode]);
+    }, [autostartApache, autostartMariaDb, autostartMongoDb, colorMode]);
 
     return (
         <Box sx={{ width: "100%" }}>
@@ -50,7 +53,10 @@ export default function AppSettings()
                     } label="Autostart Web Server" />
                     <FormControlLabel control={
                         <Checkbox onChange={(e) => setAutostartMariaDb(e.target.checked)} checked={autostartMariaDb} />
-                    } label="Autostart Database Server" />
+                    } label="Autostart SQL Database Server" />
+                    <FormControlLabel control={
+                        <Checkbox onChange={(e) => setAutostartMongoDb(e.target.checked)} checked={autostartMongoDb} />
+                    } label="Autostart noSQL Database Server" />
                 </FormGroup>
             </Box>
 

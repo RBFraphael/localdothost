@@ -1,0 +1,4 @@
+root: C:\local.host\modules\nvm\1.1.11
+path: C:\local.host\modules\nodejs
+arch: 64
+proxy: none

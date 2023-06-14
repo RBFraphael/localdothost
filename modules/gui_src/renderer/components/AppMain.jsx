@@ -9,6 +9,9 @@ import { ColorModeContext } from "../contexts/ColorModeContext";
 import AcrylicSettings from "./AcrylicSettings";
 import AppHelp from "./AppHelp";
 import AppAbout from "./AppAbout";
+import MongoDbSettings from "./MongoDbSettings";
+import NvmSettings from "./NvmSettings";
+import ExtrasSettings from "./ExtrasSettings";
 
 export default function AppMain()
 {
@@ -40,8 +43,11 @@ export default function AppMain()
                     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                         <Tabs value={currentTab} onChange={(e, tab) => setCurrentTab(tab)} aria-label="Tabs">
                             <Tab label="Web" />
-                            <Tab label="Database" />
+                            <Tab label="SQL Database" />
+                            <Tab label="noSQL Database" />
                             <Tab label="DNS" />
+                            <Tab label="NodeJS" />
+                            <Tab label="Extras" />
                             <Tab label="Help" />
                             <Tab label="Settings" />
                             <Tab label="About" />
@@ -54,15 +60,24 @@ export default function AppMain()
                         <MariaDbSettings />
                     </TabPanel>
                     <TabPanel value={currentTab} index={2}>
-                        <AcrylicSettings />
+                        <MongoDbSettings />
                     </TabPanel>
                     <TabPanel value={currentTab} index={3}>
-                        <AppHelp />
+                        <AcrylicSettings />
                     </TabPanel>
                     <TabPanel value={currentTab} index={4}>
-                        <AppSettings />
+                        <NvmSettings />
                     </TabPanel>
                     <TabPanel value={currentTab} index={5}>
+                        <ExtrasSettings />
+                    </TabPanel>
+                    <TabPanel value={currentTab} index={6}>
+                        <AppHelp />
+                    </TabPanel>
+                    <TabPanel value={currentTab} index={7}>
+                        <AppSettings />
+                    </TabPanel>
+                    <TabPanel value={currentTab} index={8}>
                         <AppAbout />
                     </TabPanel>
                 </Box>

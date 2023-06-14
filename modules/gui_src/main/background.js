@@ -3,8 +3,10 @@ import serve from 'electron-serve';
 import { createWindow } from './helpers';
 import { declareApacheIpcEvents, declareApacheCallbackEvents } from "./libs/apache-js";
 import { declareMariaDbIpcEvents, declareMariaDbCallbackEvents } from "./libs/mariadb-js";
-import { join } from "path";
 import { declareAcrylicCallbackEvents, declareAcrylicIpcEvents } from './libs/acrylic-js';
+import { declareMongoDbCallbackEvents, declareMongoDbIpcEvents } from './libs/mongodb-js';
+import { declareNvmCallbackEvents, declareNvmIpcEvents } from './libs/nvm-js';
+import { declareExtrasCallbackEvents, declareExtrasIpcEvents } from './libs/extras-js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -18,8 +20,8 @@ if (isProd) {
   await app.whenReady();
 
   const mainWindow = createWindow('Local.Host Admin Panel', {
-    width: 640,
-    height: 560,
+    width: 960,
+    height: 600,
     resizable: false
   });
 
@@ -31,6 +33,15 @@ if (isProd) {
 
   declareAcrylicIpcEvents();
   declareAcrylicCallbackEvents(mainWindow);
+
+  declareMongoDbIpcEvents();
+  declareMongoDbCallbackEvents(mainWindow);
+
+  declareNvmIpcEvents();
+  declareNvmCallbackEvents(mainWindow);
+
+  declareExtrasIpcEvents();
+  declareExtrasCallbackEvents(mainWindow);
   
   mainWindow.setMenu(null);
 
