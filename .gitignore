@@ -27,6 +27,7 @@ modules/gui_src/app
 modules/gui_src/dist
 modules/gui_src/node_modules
 modules/gui_src/renderer/.next
+modules/gui_src/package-lock.json
 
 modules/heidisql/12.5
 !modules/heidisql/12.5/.gitkeep
@@ -38,6 +39,8 @@ modules/mongodb/6.0.7
 !modules/mongodb/6.0.7/bin/mongod.conf
 !modules/mongodb/6.0.7/data/.gitkeep
 !modules/mongodb/6.0.7/logs/.gitkeep
+
+modules/nodejs
 
 modules/nvm/1.1.11
 !modules/nvm/1.1.11/settings.txt
