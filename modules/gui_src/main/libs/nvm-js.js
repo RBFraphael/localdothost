@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { ipcMain, shell } from "electron";
 import EventEmitter from "events";
-import { existsSync, rmSync } from "fs";
+import { existsSync, readdirSync, rmSync } from "fs";
 import { join } from "path";
 import { getPath, getVar, removeVar, setPath, setVar } from "../helpers/envvars";
 
@@ -98,6 +98,53 @@ const openNvmDir = (dir) => {
     }
 }
 
+const getAvailableVersions = () => {
+    fetch("https://nodejs.org/dist/index.json").then((res) => res.json()).then((versions) => {
+        nvmStatus.emit("available-versions", versions);
+    });
+};
+
+const getInstalledVersions = () => {
+    let directories = readdirSync(nvmDir, { withFileTypes: true }).filter((dirent) => dirent.isDirectory());
+    let versions = directories.map((dirent) => dirent.name.replace(/[^\d.]/, ""));
+    nvmStatus.emit("installed-versions", versions);
+};
+
+const getCurrentVersion = () => {
+    if(existsSync(nvmSymlinkDir)){
+        exec("node -v", (error, stdOut, stdErr) => {
+            let version = stdOut.trim().replace(/[^\d.]/, "");
+            nvmStatus.emit("current-version", version);
+        });
+    } else {
+        nvmStatus.emit("current-version", null);
+    }
+};
+
+const installVersion = (version) => {
+    exec(`nvm install ${version}`, (err, stdOut, stdErr) => {
+        checkVersions();
+    });
+};
+
+const uninstallVersion = (version) => {
+    exec(`nvm uninstall ${version}`, (err, stdOut, stdErr) => {
+        checkVersions();
+    });
+};
+
+const useVersion = (version) => {
+    exec(`nvm use ${version}`, (err, stdOut, stdErr) => {
+        checkVersions();
+    });
+};
+
+const checkVersions = () => {
+    getAvailableVersions();
+    getInstalledVersions();
+    getCurrentVersion();
+};
+
 export const declareNvmIpcEvents = () => {
     ipcMain.on("nvm", (e, action) => {
         nvm(action);
@@ -113,11 +160,40 @@ export const declareNvmIpcEvents = () => {
 
     ipcMain.on("nvm-status", (e) => {
         getNvmStatus();
+        checkVersions();
+    });
+
+    ipcMain.on("nvm-versions", (e) => {
+        checkVersions();
+    });
+
+    ipcMain.on("nvm-install-version", (e, version) => {
+        installVersion(version);
+    });
+    
+    ipcMain.on("nvm-uninstall-version", (e, version) => {
+        uninstallVersion(version);
+    });
+
+    ipcMain.on("nvm-use-version", (e, version) => {
+        useVersion(version);
     });
 };
 
 export const declareNvmCallbackEvents = (window) => {
     nvmStatus.on("changed", (newStatus) => {
         window.webContents.send("nvm-status-changed", newStatus);
+    });
+
+    nvmStatus.on("available-versions", (versions) => {
+        window.webContents.send("nvm-available-versions", versions);
+    });
+
+    nvmStatus.on("installed-versions", (versions) => {
+        window.webContents.send("nvm-installed-versions", versions);
+    });
+
+    nvmStatus.on("current-version", (version) => {
+        window.webContents.send("nvm-current-version", version);
     });
 };
