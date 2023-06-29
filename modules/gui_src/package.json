@@ -2,7 +2,7 @@
   "private": true,
   "name": "rbf-server",
   "description": "Front-end application to manage a development environment for web developers",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "author": "RBFraphael <rbfraphael@gmail.com>",
   "main": "app/background.js",
   "scripts": {

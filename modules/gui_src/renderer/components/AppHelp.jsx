@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { ipcRenderer } from "electron";
 
 export default function AppHelp()
 {
@@ -71,9 +72,9 @@ export default function AppHelp()
                 <hr />
                 <p>&nbsp;</p>
 
-                <h2><strong>Database Server</strong></h2>
+                <h2><strong>SQL Database Server</strong></h2>
 
-                <p>MariaDB version 10.11.3 is the bundled database server within Local.Host. You can just start the database server and use it with some client (like phpMyAdmin, Heidi SQL, MySQL Workbench or any other) and websites. Also, all bundled PHP versions have MySQL/MySQLi extensions enabled by default.&nbsp;</p>
+                <p>MariaDB version 11.0.2 is the bundled database server within Local.Host. You can just start the database server and use it with some client (like phpMyAdmin, Heidi SQL, MySQL Workbench or any other) and websites. Also, all bundled PHP versions have MySQL/MySQLi extensions enabled by default.&nbsp;</p>
 
                 <p>There is a bundled phpMyAdmin version already configured included with Local.Host that you can easily access though the control panel.</p>
 
@@ -82,9 +83,38 @@ export default function AppHelp()
                 <hr />
                 <p>&nbsp;</p>
 
+                <h2><strong>NoSQL Database Server</strong></h2>
+
+                <p>MongoDB version 6.0.7 is included with Local.Host, and you can use any MongoDB client to access. For convenience, Local.Host also includes MongoDB Compass version 1.38.0, which is the recommended way to access MongoDB.&nbsp;</p>
+
+                <p>&nbsp;</p>
+
+                <hr />
+                <p>&nbsp;</p>
+
                 <h2><strong>DNS Server</strong></h2>
 
-                <p>To explore the dynamic subdomains feature, you need to use the pre-configured bundled version of Acrylic DNS. First, install the service (through the control panel), then you need to configure your computer to use 127.0.0.1 as the DNS server. You can check how to manage that <a href="https://www.windowscentral.com/how-change-your-pcs-dns-settings-windows-10" target="_blank">here</a>. It&#39;s a easy process and you will not use more than 2 minutes on that. Also, after installing the Acrylic DNS as a service on your computer, it will start automatically on each boot.</p>
+                <p>To explore the dynamic subdomains feature, you need to use the pre-configured bundled version of Acrylic DNS. First, install the service (through the control panel), then you need to configure your computer to use 127.0.0.1 as the DNS server. You can check how to manage that <a href="#" onClick={() => ipcRenderer.send("open-link", "https://www.windowscentral.com/how-change-your-pcs-dns-settings-windows-10")}>here</a>. It&#39;s a easy process and you will not use more than 2 minutes on that. Also, after installing the Acrylic DNS as a service on your computer, it will start automatically on each boot.</p>
+
+                <p>&nbsp;</p>
+
+                <hr />
+                <p>&nbsp;</p>
+
+                <h2><strong>Node Version Manager (NVM)</strong></h2>
+
+                <p>NVM is a version manager for NodeJS. With NVM, you can have multiple NodeJS versions installed, which you can easy switch between then with one command line instruction. To learn more about NVM, <a href="#" onClick={() => ipcRenderer.send("open-link", "https://github.com/coreybutler/nvm-windows")}>check out this GitHub repository</a>.&nbsp;</p>
+
+                <p>&nbsp;</p>
+
+                <hr />
+                <p>&nbsp;</p>
+
+                <h2><strong>Extras</strong></h2>
+
+                <p>As a PHP developer, you should know about Composer. Composer is a PHP package manager (like PIP for Python or NPM for NodeJS). Local.Host includes Composer version 2.5.8, and you can install it on your system from the &quot;Extras&quot; tab. Also, installing Composer to your system, you will be able to run phpX.X commands from your terminal application.</p>
+
+                <p>Also, available from the &quot;Extras&quot; tab, you can open HeidiSQL, which is a lightweight MySQL/MariaDB/MS SQL/PostgreSQL/SQLite client. It's an alternative to phpMyAdmin.</p>
             </Box>
         </Box>
     )

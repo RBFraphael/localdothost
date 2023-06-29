@@ -112,10 +112,10 @@ const openApacheConfig = (configFile) => {
             shell.openPath(join(phpDir, "7.4.33/php.ini"));
             break;
         case "php-8.0":
-            shell.openPath(join(phpDir, "8.0.28/php.ini"));
+            shell.openPath(join(phpDir, "8.0.29/php.ini"));
             break;
         case "php-8.2":
-            shell.openPath(join(phpDir, "8.2.6/php.ini"));
+            shell.openPath(join(phpDir, "8.2.7/php.ini"));
             break;
         case "pma":
             shell.openPath(join(apacheDir, "phpmyadmin/config.inc.php"));

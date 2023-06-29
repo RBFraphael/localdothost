@@ -10,8 +10,8 @@ var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../");
 
 var mongoDbProcess = null;
-var mongoDbDir = join(modulesDir, "/mongodb/6.0.6");
-var compassDir = join(modulesDir, "/compass/1.37.0");
+var mongoDbDir = join(modulesDir, "/mongodb/6.0.7");
+var compassDir = join(modulesDir, "/compass/1.38.0");
 var mongoDbStatus = new EventEmitter();
 
 var listeningPorts = [];
@@ -45,6 +45,7 @@ const startMongoaDb = () => {
     mongoDbStatus.emit("changed", "starting");
 
     let command = `${join(mongoDbDir, "/bin/mongod.exe")} -f ${join(mongoDbDir, "/bin/mongod.conf")}`;
+    console.log(command);
     mongoDbProcess = exec(command);
     mongoDbProcess.on("spawn", () => {
         let interval = setInterval(() => {

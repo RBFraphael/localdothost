@@ -11,7 +11,7 @@ var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../");
 
 var mariaDbProcess = null;
-var mariaDbDir = join(modulesDir, "/mariadb/10.11.3");
+var mariaDbDir = join(modulesDir, "/mariadb/11.0.2");
 var mariaDbStatus = new EventEmitter();
 
 const getMariaDbListeningPorts = () => {

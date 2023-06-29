@@ -70,6 +70,10 @@ export const declareExtrasIpcEvents = () => {
     ipcMain.on("heidisql", (e) => {
         openHeidiSql();
     });
+
+    ipcMain.on("open-link", (e, link) => {
+        shell.openExternal(link);
+    });
 }
 
 export const declareExtrasCallbackEvents = (window) => {
