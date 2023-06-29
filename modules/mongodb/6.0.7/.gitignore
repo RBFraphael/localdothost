@@ -1,5 +1,0 @@
-*
-!.gitignore
-!/data/.gitkeep
-!/logs/.gitkeep
-!/bin/mongod.conf
