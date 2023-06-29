@@ -48,7 +48,6 @@ const startApache = () => {
     apacheProcess.on("spawn", () => {
         runningInterval = setInterval(() => {
             lookup("httpd", (results) => {
-                console.log(results);
                 if(results.length == 2){
                     getApacheStatus();
                     clearInterval(runningInterval);

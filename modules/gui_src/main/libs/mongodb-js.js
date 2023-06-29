@@ -3,7 +3,6 @@ import { ipcMain, shell } from "electron";
 import EventEmitter from "events";
 import { join } from "path";
 import { kill, lookup } from "../helpers/processes";
-import { existsSync } from "fs";
 
 var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../../../") : 
@@ -45,7 +44,6 @@ const startMongoaDb = () => {
     mongoDbStatus.emit("changed", "starting");
 
     let command = `${join(mongoDbDir, "/bin/mongod.exe")} -f ${join(mongoDbDir, "/bin/mongod.conf")}`;
-    console.log(command);
     mongoDbProcess = exec(command);
     mongoDbProcess.on("spawn", () => {
         let interval = setInterval(() => {
