@@ -4,7 +4,7 @@ import EventEmitter from "events";
 import { existsSync, readdirSync, rmSync } from "fs";
 import { join } from "path";
 import { getPath, getVar, removeVar, setPath, setVar } from "../helpers/envvars";
-
+import axios from "axios";
 var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../../../") : 
               join(__dirname, "../../");
@@ -99,8 +99,15 @@ const openNvmDir = (dir) => {
 }
 
 const getAvailableVersions = () => {
-    fetch("https://nodejs.org/dist/index.json").then((res) => res.json()).then((versions) => {
+    axios.get("https://nodejs.org/dist/index.json", {
+        headers: {
+            'Accept': "application/json"
+        }
+    }).then((res) => {
+        let versions = res.data;
         nvmStatus.emit("available-versions", versions);
+    }).catch((err) => {
+        nvmStatus.emit("available-versions", null);
     });
 };
 
