@@ -164,7 +164,9 @@ const uninstallVersion = (version) => {
 
 const useVersion = (version) => {
     exec(`nvm use ${version}`, (err, stdOut, stdErr) => {
-        checkVersions();
+        setTimeout(() => {
+            checkVersions();
+        }, 500);
     });
 };
 

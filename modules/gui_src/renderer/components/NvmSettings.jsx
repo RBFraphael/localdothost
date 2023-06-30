@@ -1,7 +1,8 @@
 import electron from "electron";
-import { Box, Button, CircularProgress, IconButton, List, ListItem, ListItemText, ListSubheader, Menu, MenuItem, Paper, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, FormControl, IconButton, InputLabel, List, ListItem, ListItemText, ListSubheader, Menu, MenuItem, Paper, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const ipcRenderer = electron.ipcRenderer || false;
 
@@ -11,6 +12,9 @@ export default function NvmSettings()
 
     const [nvmSettingsAnchorEl, setNvmSettingsAnchorEl] = useState(null);
     const nvmSettingsOpen = Boolean(nvmSettingsAnchorEl);
+
+    const [installingVersion, setInstallingVersion] = useState(null);
+    const [uninstallingVersion, setUninstallingVersion] = useState(null);
 
     const [availableVersions, setAvailableVersions] = useState([]);
     const [installedVersions, setInstalledVersions] = useState([]);
@@ -24,19 +28,25 @@ export default function NvmSettings()
         });
 
         ipcRenderer.on("nvm-available-versions", (e, versions) => {
-            setAvailableVersions(versions);
+            setAvailableVersions(versions ?? []);
+            setInstallingVersion(null);
         });
 
         ipcRenderer.on("nvm-installed-versions", (e, versions) => {
-            console.log("nvm-installed-versions", versions);
-            setInstalledVersions(versions);
+            setInstalledVersions(versions ?? []);
+            setUninstallingVersion(null);
         });
 
         ipcRenderer.on("nvm-current-version", (e, version) => {
-            console.log("nvm-current-version", version);
+            version = version ? version.replace(/[^\d.]/, "") : null;
             setCurrentVersion(version);
         });
     }, []);
+
+    const filterInstalledVersions = (release) => {
+        let normalizedVersion = release.version.replace(/[^\d.]/, "");
+        return installedVersions.indexOf(normalizedVersion) == -1;
+    };
 
     const nvm = (action) => {
         ipcRenderer.send("nvm", action);
@@ -44,13 +54,50 @@ export default function NvmSettings()
 
     const openNvmSettings = (e) => {
         setNvmSettingsAnchorEl(e.currentTarget);
-    }
+    };
 
     const onNvmSettingsClose = (option = null, action = null) => {
         if(option !== null && action !== null){
             ipcRenderer.send(option, action);
         }
         setNvmSettingsAnchorEl(null);
+    };
+
+    const onInstallVersion = (version) => {
+        version = version.replace(/[^\d.]/, "");
+        setInstallingVersion(version);
+        ipcRenderer.send("nvm-install-version", version);
+    };
+
+    const onUninstallVersion = (version) => {
+        version = version.replace(/[^\d.]/, "");
+        setUninstallingVersion(version);
+        ipcRenderer.send("nvm-uninstall-version", version);
+    };
+
+    const onUseVersion = (version) => {
+        version = version.replace(/[^\d.]/, "");
+        ipcRenderer.send("nvm-use-version", version);
+    };
+
+    const isInstallingVersion = (version) => {
+        if(installingVersion !== null){
+            version = version.replace(/[^\d.]/, "");
+            let workingVersion = installingVersion.replace(/[^\d.]/, "");
+            return version == workingVersion;
+        }
+
+        return false;
+    };
+
+    const isUninstallingVersion = (version) => {
+        if(uninstallingVersion !== null){
+            version = version.replace(/[^\d.]/, "");
+            let workingVersion = uninstallingVersion.replace(/[^\d.]/, "");
+            return version == workingVersion;
+        }
+
+        return false;
     }
 
     return (
@@ -92,7 +139,7 @@ export default function NvmSettings()
 
                 { status == "installed" && (
                     <Box sx={{ display: "flex", flexDirection: "row", columnGap: "1rem" }}>
-                        <Box sx={{ width: "30%" }}>
+                        <Box sx={{ width: "35%" }}>
                             <Paper>
                                 <Typography sx={{ p: "0.5rem" }}>Available versions:</Typography>
                                 <List sx={{ width: "100%", height: 220, overflow: "auto", '& ul': { padding: 0 } }} subheader={<li />} dense={true}>
@@ -102,11 +149,17 @@ export default function NvmSettings()
                                         <li key={index}>
                                             <ul>
                                                 <ListSubheader>{ `${version.version}${version.lts ? ` - LTS ("${version.lts}")` : ""}` }</ListSubheader>
-                                                { version.releases.slice(0, 5).map((release) => (
+                                                { version.releases.filter(filterInstalledVersions).slice(0, 5).map((release) => (
                                                     <ListItem key={`nodejs-${release.version}`} secondaryAction={
-                                                        <IconButton edge="end" aria-label="install">
-                                                            <DownloadIcon />
-                                                        </IconButton>
+                                                        <>
+                                                            { isInstallingVersion(release.version) ? (
+                                                                <CircularProgress size={20} />
+                                                            ) : (
+                                                                <IconButton disabled={installingVersion !== null} edge="end" aria-label="install" onClick={() => onInstallVersion(release.version)}>
+                                                                    <DownloadIcon />
+                                                                </IconButton>
+                                                            ) }
+                                                        </>
                                                     }>
                                                         <ListItemText primary={release.version} />
                                                     </ListItem>
@@ -118,9 +171,38 @@ export default function NvmSettings()
                                 </List>
                             </Paper>
                         </Box>
-                        <Box sx={{ width: "30%" }}>
+                        <Box sx={{ width: "35%" }}>
+                            <Paper>
+                                <Typography sx={{ p: "0.5rem" }}>Installed versions:</Typography>
+                                <List sx={{ width: "100%", height: 220, overflow: "auto", '& ul': { padding: 0 } }} subheader={<li />} dense={true}>
+                                    { installedVersions.map((version, index) => (
+                                        <ListItem key={index} secondaryAction={
+                                            <>
+                                                { isUninstallingVersion(version) ? (
+                                                    <CircularProgress size={20} />
+                                                ) : (
+                                                    <IconButton disabled={uninstallingVersion !== null} edge="end" aria-label="uninstall" onClick={() => onUninstallVersion(version)}>
+                                                        <ClearIcon />
+                                                    </IconButton>
+                                                ) }
+                                            </>
+                                        }>
+                                            <ListItemText primary={`v${version}`} />
+                                        </ListItem>
+                                        )
+                                    ) }
+                                </List>
+                            </Paper>
                         </Box>
-                        <Box sx={{ width: "40%" }}>
+                        <Box sx={{ width: "30%" }}>
+                            <FormControl fullWidth>
+                                <InputLabel id="nvm-active-version-label">Active version</InputLabel>
+                                <Select labelId="nvm-active-version-label" id="nvm-active-version" value={currentVersion} label="Active version" onChange={(e) => onUseVersion(e.target.value)}>
+                                    { installedVersions.map((version, index) => (
+                                        <MenuItem key={index} value={version}>v{version}</MenuItem>
+                                    )) }
+                                </Select>
+                            </FormControl>
                         </Box>
                     </Box>
                 ) }
