@@ -22,7 +22,7 @@ export default function AppAbout()
                             <strong>Github URL:</strong> https://github.com/rbfraphael
                         </Typography>
                         <Typography variant="body1">
-                            <strong>Version:</strong> 1.2.0
+                            <strong>GUI Version:</strong> 1.2.0
                         </Typography>
                         <Typography variant="body1">
                             <strong>Apache:</strong> 2.4.57
