@@ -3,6 +3,8 @@ const { exec } = require("child_process");
 const appPath = process.env.PATH.split(";").filter((segment) => segment.trim().length > 0).filter((segment) => segment.indexOf("node_modules") > -1);
 
 export function getVar(variable, callback){
+    variable = variable.toUpperCase();
+
     exec(`echo %${variable}%`, (err, stdOut, stdErr) => {
         if(err == null){
             if(callback){
@@ -10,9 +12,16 @@ export function getVar(variable, callback){
             }
         }
     });
-}
+};
 
 export function setVar(variable, value, callback){
+    variable = variable.toUpperCase();
+
+    process.env = {
+        ...process.env,
+        [variable]: value
+    };
+
     exec(`setx ${variable} "${value}"`, (err, stdOut, stdErr) => {
         if(err == null){
             if(callback){
