@@ -71,6 +71,7 @@ const getNvmStatus = () => {
             getVar("NVM_SYMLINK", (nvmSymlinkEnv) => {
                 if(inPath && nvmHomeEnv !== false && nvmSymlinkEnv !== false){
                     nvmStatus.emit("changed", "installed");
+                    checkVersions();
                 } else {
                     nvmStatus.emit("changed", "uninstalled");
                 }
@@ -104,7 +105,28 @@ const getAvailableVersions = () => {
             'Accept': "application/json"
         }
     }).then((res) => {
-        let versions = res.data;
+        let data = res.data;
+        let versions = {};
+
+        data.forEach((version) => {
+            let major = version.version.split(".")[0];
+            if(major !== "v0"){
+                if(versions.hasOwnProperty(major)){
+                    let releases = [ ...versions[major].releases, version ];
+                    versions[major].releases = releases;
+                } else {
+                    versions = {
+                        ...versions, 
+                        [major]: {
+                            version: major,
+                            lts: version.lts,
+                            releases: [version]
+                        }
+                    };
+                }
+            }
+        });
+
         nvmStatus.emit("available-versions", versions);
     }).catch((err) => {
         nvmStatus.emit("available-versions", null);
