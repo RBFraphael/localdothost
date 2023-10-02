@@ -53,7 +53,7 @@ const startMongoaDb = () => {
                 getMongoDbStatus();
                 clearInterval(interval);
             }
-        }, 500);
+        }, 1000);
     });
 };
 
@@ -70,7 +70,7 @@ const stopMongoDb = () => {
                             getMongoDbStatus();
                         }
                     });
-                }, 500);
+                }, 1000);
             });
         });
     });

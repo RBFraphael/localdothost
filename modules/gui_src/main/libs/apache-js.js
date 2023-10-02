@@ -37,7 +37,7 @@ const getApacheListeningPorts = () => {
                 }
             });
         });
-    })
+    });
 };
 
 var runningInterval = null;
@@ -53,7 +53,7 @@ const startApache = () => {
                     clearInterval(runningInterval);
                 }
             });
-        }, 100);
+        }, 1000);
     });
 };
 
