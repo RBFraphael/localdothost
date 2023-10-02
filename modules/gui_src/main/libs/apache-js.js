@@ -10,7 +10,7 @@ var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../");
 
 var apacheProcess = null;
-var apacheDir = join(modulesDir, "/apache/2.4.57");
+var apacheDir = join(modulesDir, "/apache");
 var apacheStatus = new EventEmitter();
 var phpDir = join(modulesDir, "/php");
 
@@ -99,25 +99,25 @@ const openApacheConfig = (configFile) => {
             shell.openPath(join(apacheDir, "conf/extra/httpd-local.host.conf"));
             break;
         case "php-5.6":
-            shell.openPath(join(phpDir, "5.6.40/php.ini"));
+            shell.openPath(join(phpDir, "5.6/php.ini"));
             break;
         case "php-7.0":
-            shell.openPath(join(phpDir, "7.0.33/php.ini"));
+            shell.openPath(join(phpDir, "7.0/php.ini"));
             break;
         case "php-7.2":
-            shell.openPath(join(phpDir, "7.2.34/php.ini"));
+            shell.openPath(join(phpDir, "7.2/php.ini"));
             break;
         case "php-7.4":
-            shell.openPath(join(phpDir, "7.4.33/php.ini"));
+            shell.openPath(join(phpDir, "7.4/php.ini"));
             break;
         case "php-8.0":
-            shell.openPath(join(phpDir, "8.0.29/php.ini"));
+            shell.openPath(join(phpDir, "8.0/php.ini"));
             break;
         case "php-8.2":
-            shell.openPath(join(phpDir, "8.2.7/php.ini"));
+            shell.openPath(join(phpDir, "8.2/php.ini"));
             break;
         case "pma":
-            shell.openPath(join(apacheDir, "phpmyadmin/config.inc.php"));
+            shell.openPath(join(modulesDir, "phpmyadmin/config.inc.php"));
             break;
     }
 };
@@ -134,7 +134,7 @@ const openApacheDir = (dir) => {
             shell.openPath(phpDir);
             break;
         case "pma":
-            shell.openPath(join(apacheDir, "phpmyadmin"));
+            shell.openPath(join(modulesDir, "phpmyadmin"));
             break;
     }
 };

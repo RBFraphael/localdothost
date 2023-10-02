@@ -9,8 +9,8 @@ var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../");
 
 var mongoDbProcess = null;
-var mongoDbDir = join(modulesDir, "/mongodb/6.0.7");
-var compassDir = join(modulesDir, "/compass/1.38.0");
+var mongoDbDir = join(modulesDir, "/mongodb");
+var compassDir = join(modulesDir, "/compass");
 var mongoDbStatus = new EventEmitter();
 
 var listeningPorts = [];

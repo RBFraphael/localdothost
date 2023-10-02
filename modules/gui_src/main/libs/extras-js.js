@@ -9,7 +9,7 @@ var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../../../") : 
               join(__dirname, "../../");
 
-var heidiSqlPath = join(modulesDir, "/heidisql/12.5");
+var heidiSqlPath = join(modulesDir, "/heidisql");
 var binDir = join(modulesDir, "/bin");
 var binStatus = new EventEmitter();
 

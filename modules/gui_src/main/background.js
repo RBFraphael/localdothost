@@ -1,12 +1,13 @@
 import { app } from 'electron';
 import serve from 'electron-serve';
-import { createWindow } from './helpers';
+import createWindow from './helpers/create-window';
 import { declareApacheIpcEvents, declareApacheCallbackEvents } from "./libs/apache-js";
 import { declareMariaDbIpcEvents, declareMariaDbCallbackEvents } from "./libs/mariadb-js";
 import { declareAcrylicCallbackEvents, declareAcrylicIpcEvents } from './libs/acrylic-js';
 import { declareMongoDbCallbackEvents, declareMongoDbIpcEvents } from './libs/mongodb-js';
 import { declareNvmCallbackEvents, declareNvmIpcEvents } from './libs/nvm-js';
 import { declareExtrasCallbackEvents, declareExtrasIpcEvents } from './libs/extras-js';
+import { declareLocalHostCallbackEvents, declareLocalHostIpcEvents } from './libs/localhost-js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -42,6 +43,9 @@ if (isProd) {
 
   declareExtrasIpcEvents();
   declareExtrasCallbackEvents(mainWindow);
+
+  declareLocalHostIpcEvents();
+  declareLocalHostCallbackEvents(mainWindow);
   
   mainWindow.setMenu(null);
 

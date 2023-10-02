@@ -9,7 +9,7 @@ var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../../../") : 
               join(__dirname, "../../");
 
-var nvmDir = join(modulesDir, "/nvm/1.1.11");
+var nvmDir = join(modulesDir, "/nvm");
 var nvmStatus = new EventEmitter();
 var nvmSymlinkDir = join(modulesDir, "nodejs");
 

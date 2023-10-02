@@ -8,7 +8,7 @@ var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../../../") : 
               join(__dirname, "../../");
 
-var acrylicDir = join(modulesDir, "/acrylic/2.1.1");
+var acrylicDir = join(modulesDir, "/acrylic");
 var acrylicStatus = new EventEmitter();
 
 const getAcrylicListeningPorts = () => {
