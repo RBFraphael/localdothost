@@ -33,7 +33,6 @@ export default function AcrylicSettings()
         ipcRenderer.on("acrylic-service-status-changed", (e, status) => {
             setServiceStatus(status);
             if(status == "installed"){
-                console.log("Getting server status...");
                 ipcRenderer.send("acrylic-server-status");
             }
         });
