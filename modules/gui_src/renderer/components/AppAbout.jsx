@@ -16,7 +16,7 @@ export default function AppAbout()
         ipcRenderer.on("localhost-versions-load", (e, data) => {
             setVersions(data);
         });
-    });
+    }, []);
 
     return (
         <Box sx={{ width: "100%" }}>
