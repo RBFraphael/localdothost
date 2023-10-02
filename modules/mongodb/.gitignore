@@ -1,0 +1,14 @@
+*
+!.gitignore
+
+!bin
+bin/*
+!bin/mongod.conf
+
+!data
+data/*
+!data/.gitkeep
+
+!logs
+logs/*
+!logs/.gitkeep
