@@ -4,7 +4,6 @@
 
 |Tool|Link|Install?|
 |-|-|-|
-|Advanced BAT to EXE converter|https://battoexeconverter.com/|Yes|
 |NSIS|https://nsis.sourceforge.io/Download|Yes|
 |NSIS Registry Plugin|https://nsis.sourceforge.io/Registry_plug-in#Links|Yes|
 |HM NIS Editor|https://nsis.sourceforge.io/HM_NIS_Edit|Yes|
@@ -68,15 +67,11 @@ When the build completes, copy (or move) all contents from ```/modules/gui_src/d
 
 If you want to test, you can, instead of building, just run ```npm run dev``` to start the Local.Host GUI from source code. Or, if you want to test it after building, make sure all your source code are on the ```C:\local.host``` directory, then run the ```Local.Host.exe``` file located at ```/modules/gui``` directory (after you moved it from ```/modules/gui_src/dist```, obviously).
 
-### Step 6 - Build the SymLink binaries
-
-Using the Advanced BAT to EXE Conveter you downloaded before, convert the ```/modules/bin/symlink_dir.bat``` and ```/modules/bin/symlink_file.bat``` to .EXE format, and make sure you're converting them with administrator privileges as a requirement (be sure the "UAC" checkbox on Advanced BAT to EXE Conveter window is checked before converting them). Save the converted ones with same name (```symlink_dir``` and ```symlink_file```) into the ```/modules/bin``` directory.
-
-### Step 7 - Add the Visual C++ installer to the root of Local.Host
+### Step 6 - Add the Visual C++ installer to the root of Local.Host
 
 Before building the Setup/Installer, you need to copy the installer of Microsoft Visual C++ Redistributable to the root of your Local.Host, currently `C:\local.host`, and make sure you have named it to `vcredist_x64.exe`. The final file must be located at `C:\local.host\vcredist_x64.exe`.
 
-### Step 8 - Prepare the Setup/Installer
+### Step 7 - Prepare the Setup/Installer
 
 With HM NIS Editor you've download, it's easily to create the properly installer for Local.Host. Just open it, select the `File > New Script from Wizard` (or press `Ctrl + W` on your keyboard) and follow the steps on the screen. The only important notes are:
 
@@ -86,9 +81,9 @@ With HM NIS Editor you've download, it's easily to create the properly installer
 
 At the end of the wizard, don't compile the installer yet. You need to apply some patches before.
 
-### Step 9 - Patch the installer script
+### Step 8 - Patch the installer script
 
-Add the following snippet to the script, right after the closing section of extracting all files, before the `Section -AdditionalIcons` line. Maybe it's located somewhere next to lines 7380 and 7390.
+Add the following snippet to the script, right after the closing section of extracting all files, before the `Section -AdditionalIcons` line. Maybe it's located somewhere near to lines 7380 and 7390.
 
 ```nsis
 Section "post_install"
@@ -100,7 +95,7 @@ Section "post_install"
   ${registry::Write} "HKEY_CLASSES_ROOT\Directory\shell\localhost_symlink_dir" "Icon" "C:\\local.host\\modules\\gui\\Local.Host.exe" "REG_SZ" $R0
     
   ${registry::CreateKey} "HKEY_CLASSES_ROOT\Directory\shell\localhost_symlink_dir\command" $R0
-  ${registry::Write} "HKEY_CLASSES_ROOT\Directory\shell\localhost_symlink_dir" "" '"C:\\local.host\\modules\\bin\\symlink_dir.exe" "%1"' "REG_SZ" $R0
+  ${registry::Write} "HKEY_CLASSES_ROOT\Directory\shell\localhost_symlink_dir\command" "" '"C:\\local.host\\modules\\bin\\symlink\\symlink.cmd" -d "%1"' "REG_SZ" $R0
 SectionEnd
 ```
 
@@ -113,16 +108,16 @@ After that, find the line that starts with ```Function un.onUninstSuccess``` and
   ${registry::DeleteKey} "HKEY_CLASSES_ROOT\Directory\shell\localhost_symlink_dir\command" $R0
 ```
 
-### Step 10 - Build the Setup/Installer
+### Step 9 - Build the Setup/Installer
 
 After patching the install script, compile it and wait a bit for all things to be done.
 
-### Step 11 - Test the final product
+### Step 10 - Test the final product
 
 When the setup was built, test it installing on your computer. If it's the same computer you used to build your Local.Host, maybe you already have a `C:\local.host` folder. Make sure to rename, move or delete it before running the installer.
 
 Another approach I prefer is to create a virtual machine (using VirtualBox, VMWare or anything else) with a clean Windows installation, then install the setup on that virtual machine. This way you be sure that there will be no conflicts and none of the required software (MS Visual C++ Redistributable) is installed, so you will also test if your installer will install it.
 
-### Step 12 - There's no Step 12
+### Step 11 - There's no Step 11
 
 Be happy :)
