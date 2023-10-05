@@ -2,3 +2,4 @@ app
 dist
 node_modules
 renderer/.next
+config.json

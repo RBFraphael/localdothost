@@ -4,8 +4,9 @@ import { join } from "path";
 import fs from "fs";
 import axios from "axios";
 import child_process from "child_process";
+import config from "../../config.json";
 
-const githubToken = `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`;
+const githubToken = config.githubToken;
 
 var modulesDir = process.env.NODE_ENV === "production" ?
               join(__dirname, "../../../../") : 
