@@ -24,7 +24,7 @@ goto :EOF
 :DoCommand
     SET APP="cmd"
 
-    start wscript //nologo admin.vbs %*
+    start wscript //nologo C:\local.host\modules\symlink\admin.vbs %*
     goto :EOF
 
 :EOF
