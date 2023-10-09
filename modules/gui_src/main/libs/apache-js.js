@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { ipcMain, shell } from "electron";
 import EventEmitter from "events";
 import { join } from "path";
-import { existsSync, rmSync } from "fs";
+import { existsSync, readdirSync, rmSync, statSync } from "fs";
 import { kill, lookup } from "../helpers/processes";
 
 var modulesDir = process.env.NODE_ENV === "production" ?
@@ -13,6 +13,37 @@ var apacheProcess = null;
 var apacheDir = join(modulesDir, "/apache");
 var apacheStatus = new EventEmitter();
 var phpDir = join(modulesDir, "/php");
+var docRootDir = join(modulesDir, "../www");
+var docRootDirTree = [];
+var apacheWebsitesCheck = null;
+
+const getApacheWebsites = () => {
+    docRootDirTree = [];
+    readDirectories();
+
+    let sites = ["local.host"];
+    docRootDirTree.forEach((path) => {
+        let folderUri = path.replace(docRootDir, "").split("\\").reverse().join(".").replace(/^\.+/, "").replace(/\.+$/, "");
+        if(folderUri.length > 0){
+            sites.push(`${folderUri}.local.host`);
+        }
+    });
+
+    apacheStatus.emit("sites", sites);
+};
+
+const readDirectories = (root = null) => {
+    root = root ? root : docRootDir;
+    docRootDirTree.push(root);
+
+    let files = readdirSync(root);
+    files.forEach((file) => {
+        let filePath = join(root, file);
+        if(statSync(filePath).isDirectory()){
+            readDirectories(filePath);
+        }
+    });
+}
 
 const getApacheListeningPorts = () => {
 
@@ -145,9 +176,15 @@ const getApacheStatus = () => {
             apacheStatus.emit("changed", "stopped");
             apacheStatus.emit("listening", []);
             apacheStatus.emit("pid", []);
+
+            clearInterval(apacheWebsitesCheck);
         } else if(results.length == 2){
             apacheStatus.emit("changed", "running");
             getApacheListeningPorts();
+            
+            apacheWebsitesCheck = setInterval(() => {
+                getApacheWebsites();
+            }, 1000);
 
             let pid = [];
             results.forEach((process) => pid.push(process.pid));
@@ -194,6 +231,14 @@ export const declareApacheIpcEvents = () => {
     ipcMain.on("apache-status", (e) => {
         getApacheStatus();
     });
+
+    ipcMain.on("apache-sites", (e) => {
+        getApacheWebsites();
+    });
+
+    ipcMain.on("apache-open-site", (e, site) => {
+        shell.openExternal(site);
+    });
 };
 
 export const declareApacheCallbackEvents = (window) => {
@@ -208,4 +253,8 @@ export const declareApacheCallbackEvents = (window) => {
     apacheStatus.on("pid", (pid) => {
         window.webContents.send("apache-pid", pid);
     });
+
+    apacheStatus.on("sites", (sites) => {
+        window.webContents.send("apache-sites", sites);
+    })
 };
