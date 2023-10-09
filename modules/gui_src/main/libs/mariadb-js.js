@@ -39,6 +39,7 @@ const getMariaDbListeningPorts = () => {
     });
 };
 
+var runningInterval = null;
 const startMariaDb = () => {
     mariaDbStatus.emit("changed", "starting");
 
@@ -47,7 +48,14 @@ const startMariaDb = () => {
         exec(join(mariaDbDir, "/bin/mariadb-install-db.exe"), () => {
             mariaDbProcess = exec(join(mariaDbDir, "/bin/mariadbd.exe"));
             mariaDbProcess.on("spawn", () => {
-                getMariaDbStatus();
+                runningInterval = setInterval(() => {
+                    lookup("mariadbd", (results) => {
+                        if(results.length == 1){
+                            getMariaDbStatus();
+                            clearInterval(runningInterval);
+                        }
+                    });
+                }, 1000);
             });
         });
     } else {
