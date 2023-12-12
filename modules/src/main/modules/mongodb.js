@@ -15,6 +15,14 @@ const compassExe = path.join(compassDir, "/MongoDBCompass.exe");
 
 var mongodbInterval = null;
 
+const boot = (autostart = false) => {
+    if(autostart){
+        mongodb("start");
+    } else {
+        mongodb("status");
+    }
+};
+
 const mongodb = (action) => {
     switch(action){
         case "start":
@@ -96,6 +104,7 @@ const openDir = (dir) => {
 
 const init = (appWindow) => {
     ipcMain.on("mongodb", (e, action) => mongodb(action) );
+    ipcMain.on("mongodb-boot", (e, autostart) => boot(autostart) );
     ipcMain.on("mongodb-status", (e, action) => getStatus() );
     ipcMain.on("mongodb-config", (e, config) => openConfig(config) );
     ipcMain.on("mongodb-dir", (e, dir) => openDir(dir) );

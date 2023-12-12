@@ -163,8 +163,6 @@ const setVersion = (version) => {
 };
 
 const init = (appWindow) => {
-    console.log("NodeJS init()");
-
     ipcMain.on("nvm", (e, action) => { nvm(action); });
     ipcMain.on("nvm-config", (e) => { openConfig(); });
     ipcMain.on("nvm-dir", (e, dir) => { openDir(dir); });

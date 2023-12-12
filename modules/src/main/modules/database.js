@@ -16,6 +16,14 @@ const mariadbDataDir = path.join(mariadbDir, `/data`);
 
 var mariadbInterval = null;
 
+const boot = (autostart = false) => {
+    if(autostart){
+        mariadb("start");
+    } else {
+        mariadb("status");
+    }
+};
+
 const mariadb = (action) => {
     const start = () => {
         let mariadb = spawn(mariadbExe, {detached: true});
@@ -115,9 +123,8 @@ const openDir = (dir) => {
 };
 
 const init = (appWindow) => {
-    console.log("Database init()");
-
     ipcMain.on("mariadb", (e, action) => mariadb(action) );
+    ipcMain.on("mariadb-boot", (e, autostart) => boot(autostart) );
     ipcMain.on("mariadb-status", (e) => getStatus() );
     ipcMain.on("mariadb-config", (e, config) => openConfig(config) );
     ipcMain.on("mariadb-dir", (e, dir) => openDir(dir) );

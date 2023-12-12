@@ -1,6 +1,7 @@
 import { Box, Checkbox, FormControlLabel, FormGroup, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { ColorModeContext } from "../contexts/ColorModeContext";
+import { ISettings } from "@/interfaces/ISettings";
 
 export default function Settings()
 {
@@ -9,28 +10,40 @@ export default function Settings()
     const [autostartApache, setAutostartApache] = useState<boolean>(false);
     const [autostartMariaDb, setAutostartMariaDb] = useState<boolean>(false);
     const [autostartMongoDb, setAutostartMongoDb] = useState<boolean>(false);
+    const [init, setInit] = useState<boolean>(true);
 
     useEffect(() => {
-        let appSettingsJson = localStorage.getItem("settings");
-        if(appSettingsJson){
-            let appSettings = JSON.parse(appSettingsJson);
-            setAutostartApache(appSettings.autostart?.apache ?? false);
-            setAutostartMariaDb(appSettings.autostart?.mariadb ?? false);
-            setAutostartMongoDb(appSettings.autostart?.mongodb ?? false);
-            setColorMode(appSettings.theme ?? colorMode);
-        }
+        window.ipcRenderer.send("localhost-boot");
+
+        window.ipcRenderer.on("localhost-init", (e: any, settings: ISettings) => {
+            setAutostartApache(settings.autostart.apache);
+            setAutostartMariaDb(settings.autostart.mariadb);
+            setAutostartMongoDb(settings.autostart.mongodb);
+            setColorMode(settings.theme);
+            setInit(false);
+        });
+
+        window.ipcRenderer.on("localhost-settings", (e: any, settings: ISettings) => {
+            setAutostartApache(settings.autostart.apache);
+            setAutostartMariaDb(settings.autostart.mariadb);
+            setAutostartMongoDb(settings.autostart.mongodb);
+            setColorMode(settings.theme);
+        });
     }, []);
 
     useEffect(() => {
-        let appSettings = {
-            autostart: {
-                apache: autostartApache,
-                mariadb: autostartMariaDb,
-                mongodb: autostartMongoDb,
-            },
-            theme: colorMode
-        };
-        localStorage.setItem("settings", JSON.stringify(appSettings));
+        if(!init){
+            let appSettings = {
+                autostart: {
+                    apache: autostartApache,
+                    mariadb: autostartMariaDb,
+                    mongodb: autostartMongoDb,
+                },
+                theme: colorMode
+            };
+            
+            window.ipcRenderer.send("localhost-settings", appSettings);
+        }
     }, [autostartApache, autostartMariaDb, autostartMongoDb, colorMode]);
 
     return (

@@ -2,6 +2,7 @@ import electron from "electron";
 import { Box, Button, CircularProgress, IconButton, List, ListItem, ListItemText, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import LinkIcon from "@mui/icons-material/Launch";
+import { ISettings } from "@/interfaces/ISettings";
 
 export default function WebServer()
 {
@@ -52,14 +53,9 @@ export default function WebServer()
     }
 
     useEffect(() => {
-        let autostart = false;
-        let appSettingsJson = localStorage.getItem("settings");
-        if(appSettingsJson){
-            let appSettings = JSON.parse(appSettingsJson);
-            autostart = appSettings.autostart?.apache ?? false;
-        }
-
-        window.ipcRenderer.send("apache-boot", autostart);
+        window.ipcRenderer.on("localhost-init", (e: any, settings: ISettings) => {
+            window.ipcRenderer.send("apache-boot", settings.autostart.apache);
+        });
 
         window.ipcRenderer.on("apache-status", (e: any, status: string) => {
             setStatus(status);

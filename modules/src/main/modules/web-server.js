@@ -16,6 +16,14 @@ const docRoot = path.join(getModulesDir(), "../www");
 
 var apacheInterval = null;
 
+const boot = (autostart = false) => {
+    if(autostart){
+        apache("start");
+    } else {
+        apache("status");
+    }
+};
+
 const apache = (action) => {
     switch(action){
         case "start":
@@ -122,9 +130,8 @@ const openDir = (dir) => {
 };
 
 const init = (appWindow) => {
-    console.log("Web Server init()");
-
     ipcMain.on("apache", (e, action) => apache(action) );
+    ipcMain.on("apache-boot", (e, autostart) => boot(autostart) );
     ipcMain.on("apache-status", (e) => getStatus() );
     ipcMain.on("apache-config", (e, config) => openConfig(config) );
     ipcMain.on("apache-dir", (e, dir) => openDir(dir) );

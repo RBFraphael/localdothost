@@ -5,10 +5,11 @@ const EventEmitter = require("events");
 const axios = require("axios");
 const config = require("../../config.json");
 const { spawn } = require("child_process");
-const { ipcMain } = require("electron");
+const { ipcMain, app } = require("electron");
 
 const updatePackage = path.join(getModulesDir(), "../update.exe");
 const versionsFile = path.join(getModulesDir(), "versions.json");
+const appSettings = path.join(app.getPath("appData"), "settings.json");
 const localhostStatus = new EventEmitter();
 
 var versions = null;
@@ -26,7 +27,6 @@ const localhost = (action) => {
 };
 
 const getVersions = (checkUpdates = false) => {
-    console.log("localhost getVersions()");
     fs.readFile(versionsFile, (err, data) => {
         if(!err){
             versions = JSON.parse(data);
@@ -37,7 +37,6 @@ const getVersions = (checkUpdates = false) => {
 };
 
 const checkForUpdates = (downloadLatest = false) => {
-    console.log("localhost checkForUpdates()");
     if(fs.existsSync(updatePackage)){ fs.unlinkSync(updatePackage); }
 
     if(versions == null){
@@ -75,7 +74,6 @@ const checkForUpdates = (downloadLatest = false) => {
 };
 
 const downloadLatestRelease = async () => {
-    console.log("localhost downloadLatestRelease()");
     if(repoVersions == null){
         checkForUpdates(true);
     } else {
@@ -131,21 +129,43 @@ const downloadLatestRelease = async () => {
 };
 
 const installUpdatePackage = (appWindow) => {
-    console.log("localhost installUpdatePackage()");
     let update = spawn(updatePackage, {detached: true});
 
     update.on("spawn", () => {
         appWindow.close();
     });
+};
+
+const saveSettings = (settings) => {
+    fs.writeFileSync(appSettings, JSON.stringify(settings));
+    loadSettings();
+};
+
+const loadSettings = (booting = false) => {
+    let settings = {
+        autostart: {
+            apache: false,
+            mariadb: false,
+            mongodb: false,
+        },
+        theme: "light"
+    };
+
+    if(fs.existsSync(appSettings)){
+        let data = fs.readFileSync(appSettings);
+        settings = JSON.parse(data);
+    }
+
+    localhostStatus.emit(booting ? "init" : "settings", settings);
 }
 
 const init = (appWindow) => {
-    console.log("localhost init()");
-
+    ipcMain.on("localhost-boot", (e) => { loadSettings(true); });
     ipcMain.on("localhost-versions", (e, checkUpdates = false) => { getVersions(checkUpdates); });
     ipcMain.on("localhost-check-for-updates", (e) => { checkForUpdates(); });
     ipcMain.on("localhost-download-update", (e) => { downloadLatestRelease(); });
     ipcMain.on("localhost-apply-update", (e) => { installUpdatePackage(appWindow); });
+    ipcMain.on("localhost-settings", (e, settings) => { saveSettings(settings); });
 
     localhostStatus.on("status", (status) => {
         appWindow.webContents.send("localhost-status", status);
@@ -157,6 +177,14 @@ const init = (appWindow) => {
 
     localhostStatus.on("available", (available) => {
         appWindow.webContents.send("localhost-available", available);
+    });
+
+    localhostStatus.on("settings", (settings) => {
+        appWindow.webContents.send("localhost-settings", settings);
+    });
+
+    localhostStatus.on("init", (settings) => {
+        appWindow.webContents.send("localhost-init", settings);
     });
 };
 

@@ -1,3 +1,4 @@
+import { ISettings } from "@/interfaces/ISettings";
 import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -52,14 +53,9 @@ export default function Database()
     }
 
     useEffect(() => {
-        let autostart = false;
-        let appSettingsJson = localStorage.getItem("settings");
-        if(appSettingsJson){
-            let appSettings = JSON.parse(appSettingsJson);
-            autostart = appSettings.autostart?.mariadb ?? false;
-        }
-
-        window.ipcRenderer.send("mariadb-boot", autostart);
+        window.ipcRenderer.on("localhost-init", (e: any, settings: ISettings) => {
+            window.ipcRenderer.send("mariadb-boot", settings.autostart.mariadb);
+        });
 
         window.ipcRenderer.on("mariadb-status", (e: any, status: string) => {
             setStatus(status);

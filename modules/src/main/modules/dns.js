@@ -122,8 +122,6 @@ const getPids = (processes, checkPorts = false) => {
 }
 
 const init = (appWindow) => {
-    console.log("DNS init()");
-
     ipcMain.on("acrylic-server", (e, action) => server(action) );
     ipcMain.on("acrylic-service", (e, action) => service(action) );
     ipcMain.on("acrylic-config", (e, config) => openConfig(config) );
