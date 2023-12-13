@@ -5,7 +5,7 @@ const EventEmitter = require("events");
 const axios = require("axios");
 const config = require("../../config.json");
 const { spawn } = require("child_process");
-const { ipcMain, app } = require("electron");
+const { ipcMain, app, shell } = require("electron");
 
 const updatePackage = path.join(getModulesDir(), "../update.exe");
 const versionsFile = path.join(getModulesDir(), "versions.json");
@@ -159,6 +159,10 @@ const loadSettings = (booting = false) => {
     localhostStatus.emit(booting ? "init" : "settings", settings);
 }
 
+const onlineHelp = () => {
+    shell.openExternal("https://github.com/RBFraphael/localdothost/wiki");
+};
+
 const init = (appWindow) => {
     ipcMain.on("localhost-boot", (e) => { loadSettings(true); });
     ipcMain.on("localhost-versions", (e, checkUpdates = false) => { getVersions(checkUpdates); });
@@ -166,6 +170,7 @@ const init = (appWindow) => {
     ipcMain.on("localhost-download-update", (e) => { downloadLatestRelease(); });
     ipcMain.on("localhost-apply-update", (e) => { installUpdatePackage(appWindow); });
     ipcMain.on("localhost-settings", (e, settings) => { saveSettings(settings); });
+    ipcMain.on("localhost-help", (e) => { onlineHelp(); });
 
     localhostStatus.on("status", (status) => {
         appWindow.webContents.send("localhost-status", status);

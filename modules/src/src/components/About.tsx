@@ -43,7 +43,7 @@ export default function About()
     };
 
     const onlineHelp = () => {
-        //
+        window.ipcRenderer.send("localhost-help");
     };
 
     useEffect(() => {
