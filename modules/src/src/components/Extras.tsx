@@ -1,7 +1,6 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import HeidiSqlLogo from "../assets/heidisql.png";
 import ComposerLogo from "../assets/composer.png";
 import PhpLogo from "../assets/php.png";
 
@@ -20,10 +19,6 @@ export default function Extras()
     const extras = (action: string) => {
         window.ipcRenderer.send("extras", action);
     };
-
-    const openHeidiSql = () => {
-        window.ipcRenderer.send("heidisql");
-    }
 
     return (
         <>
