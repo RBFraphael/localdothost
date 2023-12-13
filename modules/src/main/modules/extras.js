@@ -50,7 +50,7 @@ const openHeidiSql = () => {
 
 const init = (appWindow) => {
     ipcMain.on("extras", (e, action) => { extras(action); });
-    ipcMain.on("extras-status", (e) => { getStatus; });
+    ipcMain.on("extras-status", (e) => { getStatus(); });
     ipcMain.on("heidisql", (e) => { openHeidiSql(); });
 
     extrasStatus.on("status", (status) => {
