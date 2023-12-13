@@ -37,8 +37,6 @@ const getVersions = (checkUpdates = false) => {
 };
 
 const checkForUpdates = (downloadLatest = false) => {
-    if(fs.existsSync(updatePackage)){ fs.unlinkSync(updatePackage); }
-
     if(versions == null){
         getVersions(true);
     } else {
@@ -82,6 +80,8 @@ const downloadLatestRelease = async () => {
 
         latestRelease.assets.forEach((asset) => {
             if(asset.name == "update.exe"){
+                if(fs.existsSync(updatePackage)){ fs.unlinkSync(updatePackage); }
+                
                 hasUpdatePackage = true;
                 localhostStatus.emit("status", "downloading");
 
