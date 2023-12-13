@@ -1,0 +1,6 @@
+appId: "io.github.rbfraphael.localdothost"
+productName: "Local.Host"
+copyright: "Copyright (c) 2023 RBFraphael"
+win:
+  target: ["dir"]
+  icon: "build/icon.ico"
