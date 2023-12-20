@@ -60,7 +60,10 @@ const apache = (action) => {
 
                 lookup("httpd", (results) => {
                     results.forEach((process) => {
-                        kill(process.pid);
+                        kill(process.pid, () => {
+                            if(existsSync(apachePidFile)){ rmSync(apachePidFile); }
+                            getStatus();
+                        });
                     });
                 });
             }

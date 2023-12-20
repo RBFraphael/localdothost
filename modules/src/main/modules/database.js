@@ -55,6 +55,7 @@ const mariadb = (action) => {
             break;
         case "stop":
             mariadbStatus.emit("status", "stopping");
+
             if(process){
                 if(!process.killed){
                     process.kill();
@@ -62,7 +63,10 @@ const mariadb = (action) => {
             } else {
                 lookup("mariadbd", (results) => {
                     results.forEach((p) => {
-                        kill(p.pid);
+                        kill(p.pid, () => {
+                            if(existsSync(mariadbPidFile)){ rmSync(mariadbPidFile); }
+                            getStatus();
+                        });
                     });
                 });
             }

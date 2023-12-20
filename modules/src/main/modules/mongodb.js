@@ -53,7 +53,9 @@ const mongodb = (action) => {
             } else {
                 lookup("mongod", (results) => {
                     results.forEach((p) => {
-                        kill(p.pid);
+                        kill(p.pid, () => {
+                            setTimeout(getStatus, 1000);
+                        });
                     });
                 });
             }
