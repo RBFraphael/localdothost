@@ -9,6 +9,7 @@ const mongodbDir = path.join(getModulesDir(), "/mongodb");
 const mongodbExe = path.join(mongodbDir, "/bin/mongod.exe");
 const mongodbConfig = path.join(mongodbDir, "/bin/mongod.conf");
 const mongodbStatus = new EventEmitter();
+var process = null;
 
 const compassDir = path.join(getModulesDir(), "/compass");
 const compassExe = path.join(compassDir, "/MongoDBCompass.exe");
@@ -27,29 +28,35 @@ const mongodb = (action) => {
     switch(action){
         case "start":
             mongodbStatus.emit("status", "starting");
-            let mongodb = spawn(mongodbExe, ["-f", mongodbConfig], {detached: true});
+            process = spawn(mongodbExe, ["-f", mongodbConfig], {detached: true});
 
-            mongodb.on("spawn", () => {
-                if(mongodb.connected){ mongodb.disconnect(); }
-                mongodb.unref();
+            process.on("spawn", () => {
+                if(process.connected){ process.disconnect(); }
+                process.unref();
 
                 setTimeout(() => {
-                    mongodbInterval = setInterval(getStatus, 1000);
+                    mongodbInterval = setInterval(getStatus, 1000 * 1);
                 }, 1000);
             });
 
-            mongodb.on("exit", () => {
+            process.on("exit", () => {
                 clearInterval(mongodbInterval);
-                setTimeout(getStatus, 1000);
+                setTimeout(getStatus, 1000 * 1);
             });
             break;
         case "stop":
             mongodbStatus.emit("status", "stopping");
-            lookup("mongod", (results) => {
-                results.forEach((p) => {
-                    kill(p.pid);
+            if(process){
+                if(!process.killed){
+                    process.kill();
+                }
+            } else {
+                lookup("mongod", (results) => {
+                    results.forEach((p) => {
+                        kill(p.pid);
+                    });
                 });
-            });
+            }
             break;
         case "status":
             getStatus();
@@ -61,16 +68,30 @@ const mongodb = (action) => {
 };
 
 const getStatus = () => {
-    lookup("mongod", (results) => {
-        if(results.length > 0){
+    if(process){
+        if(process.killed == false){
             mongodbStatus.emit("status", "running");
-            getPids(results, true);
+            mongodbStatus.emit("pids", [process.pid]);
+            listeningPorts(process.pid, (ports) => {
+                mongodbStatus.emit("ports", ports);
+            });
         } else {
             mongodbStatus.emit("status", "stopped");
             mongodbStatus.emit("pids", []);
             mongodbStatus.emit("ports", []);
         }
-    });
+    } else {
+        lookup("mongod", (results) => {
+            if(results.length > 0){
+                mongodbStatus.emit("status", "running");
+                getPids(results, true);
+            } else {
+                mongodbStatus.emit("status", "stopped");
+                mongodbStatus.emit("pids", []);
+                mongodbStatus.emit("ports", []);
+            }
+        });
+    }
 };
 
 const getPids = (processes, checkPorts = false) => {

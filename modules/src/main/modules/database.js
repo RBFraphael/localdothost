@@ -13,6 +13,7 @@ const mariadbInstallerExe = path.join(mariadbDir, "/bin/mariadb-install-db.exe")
 const mariadbStatus = new EventEmitter();
 const mariadbPidFile = path.join(mariadbDir, `/data/${hostname()}.pid`);
 const mariadbDataDir = path.join(mariadbDir, `/data`);
+var process = null;
 
 var mariadbInterval = null;
 
@@ -26,22 +27,18 @@ const boot = (autostart = false) => {
 
 const mariadb = (action) => {
     const start = () => {
-        let mariadb = spawn(mariadbExe, {detached: true});
+        process = spawn(mariadbExe, {detached: true});
 
-        mariadb.stderr.on("data", (chunk) => {
-            console.log(chunk.toString());
+        process.on("spawn", () => {
+            if(process.connected){ process.disconnect(); }
+            process.unref();
+            mariadbInterval = setInterval(getStatus, 1000 * 1);
         });
 
-        mariadb.on("spawn", () => {
-            if(mariadb.connected){ mariadb.disconnect(); }
-            mariadb.unref();
-            mariadbInterval = setInterval(getStatus, 1000);
-        });
-
-        mariadb.on("exit", () => {
+        process.on("exit", () => {
             clearInterval(mariadbInterval);
             if(existsSync(mariadbPidFile)){ rmSync(mariadbPidFile); }
-            getStatus();
+            setTimeout(getStatus, 1000 * 1);
         });
     };
 
@@ -58,11 +55,17 @@ const mariadb = (action) => {
             break;
         case "stop":
             mariadbStatus.emit("status", "stopping");
-            lookup("mariadbd", (results) => {
-                results.forEach((p) => {
-                    kill(p.pid);
+            if(process){
+                if(!process.killed){
+                    process.kill();
+                }
+            } else {
+                lookup("mariadbd", (results) => {
+                    results.forEach((p) => {
+                        kill(p.pid);
+                    });
                 });
-            })
+            }
             break;
         case "status":
             getStatus();
@@ -74,16 +77,30 @@ const mariadb = (action) => {
 };
 
 const getStatus = () => {
-    lookup("mariadbd", (results) => {
-        if(results.length > 0){
+    if(process){
+        if(process.killed == false){
             mariadbStatus.emit("status", "running");
-            getPids(results, true);
+            mariadbStatus.emit("pids", [process.pid]);
+            listeningPorts(process.pid, (ports) => {
+                mariadbStatus.emit("ports", ports);
+            });
         } else {
             mariadbStatus.emit("status", "stopped");
             mariadbStatus.emit("pids", []);
             mariadbStatus.emit("ports", []);
         }
-    });
+    } else {
+        lookup("mariadbd", (results) => {
+            if(results.length > 0){
+                mariadbStatus.emit("status", "running");
+                getPids(results, true);
+            } else {
+                mariadbStatus.emit("status", "stopped");
+                mariadbStatus.emit("pids", []);
+                mariadbStatus.emit("ports", []);
+            }
+        });
+    }
 };
 
 const getPids = (processes, checkPorts = false) => {

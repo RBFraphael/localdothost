@@ -29,10 +29,19 @@ const listeningPorts = (pids, callback) => {
             let data = line.split(" ").filter((v) => v.length > 0);
             let pid = data.pop();
     
-            if(pids.indexOf(pid) > -1){
-                let port = data[1].split(":").pop();
-                if(ports.indexOf(port) == -1){
-                    ports.push(port);
+            if(Array.isArray(pids)){
+                if(pids.indexOf(pid) > -1){
+                    let port = data[1].split(":").pop();
+                    if(ports.indexOf(port) == -1){
+                        ports.push(port);
+                    }
+                }
+            } else {
+                if(pids == pid){
+                    let port = data[1].split(":").pop();
+                    if(ports.indexOf(port) == -1){
+                        ports.push(port);
+                    }
                 }
             }
         });

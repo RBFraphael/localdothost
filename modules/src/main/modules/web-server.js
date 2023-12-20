@@ -10,6 +10,7 @@ const apacheDir = path.join(getModulesDir(), "apache");
 const apacheExe = path.join(apacheDir, "/bin/httpd.exe");
 const apachePidFile = path.join(apacheDir, "/logs/httpd.pid");
 const apacheStatus = new EventEmitter();
+var process = null;
 
 const phpDir = path.join(getModulesDir(), "php");
 const docRoot = path.join(getModulesDir(), "../www");
@@ -28,39 +29,41 @@ const apache = (action) => {
     switch(action){
         case "start":
             apacheStatus.emit("status", "starting");
-            let apache = spawn(apacheExe, { detached: true });
-
-            apache.stderr.on("data", (chunk) => {
-                console.log(chunk.toString());
-            });
-
-            apache.on("spawn", () => {
-                if(apache.connected){ apache.disconnect(); }
-                apache.unref();
+            process = spawn(apacheExe, { detached: true });
+                
+            process.on("spawn", () => {
+                if(process.connected){ process.disconnect(); }
+                process.unref();
 
                 setTimeout(() => {
-                    apacheInterval = setInterval(getStatus, 1000);
+                    apacheInterval = setInterval(getStatus, 1000 * 1);
                 }, 1000);
             });
 
-            apache.on("exit", () => {
+            process.on("exit", () => {
                 clearInterval(apacheInterval);
                 if(existsSync(apachePidFile)){ rmSync(apachePidFile); }
-                getStatus();
+                setTimeout(getStatus, 1000 * 1);
             });
             break;
         case "stop":
             apacheStatus.emit("status", "stopping");
-            
-            lookup("php-cgi", (results) => {
-                results.forEach((process) => { kill(process.pid) });
-            });
 
-            lookup("httpd", (results) => {
-                results.forEach((process) => {
-                    kill(process.pid);
+            if(process){
+                if(!process.killed){
+                    process.kill();
+                }
+            } else {
+                lookup("php-cgi", (results) => {
+                    results.forEach((process) => { kill(process.pid) });
                 });
-            });
+
+                lookup("httpd", (results) => {
+                    results.forEach((process) => {
+                        kill(process.pid);
+                    });
+                });
+            }
             break;
         case "status":
             getStatus();
@@ -72,16 +75,30 @@ const apache = (action) => {
 };
 
 const getStatus = () => {
-    lookup("httpd", (results) => {
-        if(results.length >= 2){
+    if(process){
+        if(process.killed == false){
             apacheStatus.emit("status", "running");
-            getPids(results, true);
+            apacheStatus.emit("pids", [process.pid]);
+            listeningPorts(process.pid, (ports) => {
+                apacheStatus.emit("ports", ports);
+            });
         } else {
             apacheStatus.emit("status", "stopped");
             apacheStatus.emit("pids", []);
             apacheStatus.emit("ports", []);
         }
-    });
+    } else {
+        lookup("httpd", (results) => {
+            if(results.length >= 2){
+                apacheStatus.emit("status", "running");
+                getPids(results, true);
+            } else {
+                apacheStatus.emit("status", "stopped");
+                apacheStatus.emit("pids", []);
+                apacheStatus.emit("ports", []);
+            }
+        });
+    }
 };
 
 const getPids = (processes, checkPorts = false) => {
@@ -94,6 +111,7 @@ const getPids = (processes, checkPorts = false) => {
 
 const getPorts = (pids) => {
     listeningPorts(pids, (ports) => {
+        console.log(ports);
         apacheStatus.emit("ports", ports);
     });
 };
