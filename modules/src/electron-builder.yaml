@@ -4,3 +4,10 @@ copyright: "Copyright (c) 2023 RBFraphael"
 win:
   target: ["dir"]
   icon: "build/icon.ico"
+files:
+  - from: .
+    filter:
+      - config.json
+      - package.json
+      - main
+      - out
