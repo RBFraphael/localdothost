@@ -42,15 +42,13 @@ const checkForUpdates = (downloadLatest = false) => {
     } else {
         localhostStatus.emit("status", "checking");
 
-        axios.get("https://api.github.com/repos/rbfraphael/localdothost/releases", {
+        axios.get("https://api.github.com/repos/rbfraphael/localdothost/releases/latest", {
             headers: {
                 'Accept': "application/json",
                 'Authorization': `Bearer ${config.githubToken}`
             }
         }).then((res) => {
-            repoVersions = res.data;
-
-            let latestRelease = repoVersions[0];
+            let latestRelease = res.data;
             
             let currentVersion = parseInt(versions.gui.replace(/\D/g, ""));
             let latestVersion = parseInt(latestRelease.name.replace(/\D/g, ""));
