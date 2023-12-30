@@ -10,7 +10,7 @@ import WebServer from "@/components/WebServer";
 import { ColorModeContext } from "@/contexts/ColorModeContext";
 import { Box, CssBaseline, Tab, Tabs, ThemeProvider, createTheme } from "@mui/material";
 import Head from "next/head";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function Home() {
 
@@ -24,6 +24,37 @@ export default function Home() {
     const lightTheme = createTheme({
         palette: { mode: "light" }
     });
+
+    useEffect(() => {
+        window.ipcRenderer.on("tab", (e: any, tab: string) => {
+            switch(tab){
+                case "web":
+                    setCurrentTab(0);
+                    break;
+                case "database":
+                    setCurrentTab(1);
+                    break;
+                case "mongodb":
+                    setCurrentTab(2);
+                    break;
+                case "dns":
+                    setCurrentTab(3);
+                    break;
+                case "node":
+                    setCurrentTab(4);
+                    break;
+                case "cli":
+                    setCurrentTab(5);
+                    break;
+                case "settings":
+                    setCurrentTab(6);
+                    break;
+                case "about":
+                    setCurrentTab(7);
+                    break;
+            }
+        })
+    }, []);
 
     return (
         <ThemeProvider theme={colorMode == "dark" ? darkTheme : lightTheme}>

@@ -11,12 +11,39 @@ const init = (appWindow) => {
 
         const contextMenu = Menu.buildFromTemplate([
             {
-                label: 'Show', click: function () {
-                    appWindow.show();
-                }
+                label: "Web Server",
+                click: () => { restoreOnTab(appWindow, "web"); }
             },
             {
-                label: 'Exit', click: function () {
+                label: "Database",
+                click: () => { restoreOnTab(appWindow, "database"); }
+            },
+            {
+                label: "MongoDB",
+                click: () => { restoreOnTab(appWindow, "mongodb"); }
+            },
+            {
+                label: "DNS",
+                click: () => { restoreOnTab(appWindow, "dns"); }
+            },
+            {
+                label: "NodeJS",
+                click: () => { restoreOnTab(appWindow, "node"); }
+            },
+            {
+                type: "separator"
+            },
+            {
+                label: 'Open Admin Panel',
+                click: () => { appWindow.show(); }
+            },
+            {
+                label: 'Local.Host Settings',
+                click: () => { restoreOnTab(appWindow, "settings") }
+            },
+            {
+                label: 'Exit Local.Host',
+                click: () => {
                     app.isQuiting = true;
                     app.quit();
                 }
@@ -32,6 +59,13 @@ const init = (appWindow) => {
     }
 
     return tray;
+};
+
+const restoreOnTab = (appWindow, tab = null) => {
+    appWindow.show();
+    if(tab){
+        appWindow.webContents.send("tab", tab);
+    }
 };
 
 const destroy = () => {
