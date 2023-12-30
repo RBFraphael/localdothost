@@ -114,7 +114,6 @@ const getPids = (processes, checkPorts = false) => {
 
 const getPorts = (pids) => {
     listeningPorts(pids, (ports) => {
-        console.log(ports);
         apacheStatus.emit("ports", ports);
     });
 };
