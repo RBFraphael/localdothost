@@ -146,15 +146,23 @@ const loadSettings = (booting = false) => {
             mariadb: false,
             mongodb: false,
         },
-        theme: "light"
+        theme: "light",
+        closeToTray: false,
+        minimizeToTray: false
     };
 
     if(fs.existsSync(appSettings)){
         let data = fs.readFileSync(appSettings);
-        settings = JSON.parse(data);
+        let loadedSettings = JSON.parse(data);
+
+        settings = {
+            ...settings,
+            ...loadedSettings
+        };
     }
 
     localhostStatus.emit(booting ? "init" : "settings", settings);
+    return settings;
 }
 
 const onlineHelp = () => {
@@ -195,5 +203,6 @@ const finish = () => { };
 
 module.exports = {
     init,
-    finish
+    finish,
+    loadSettings
 };

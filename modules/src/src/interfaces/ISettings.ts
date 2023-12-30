@@ -4,5 +4,7 @@ export interface ISettings {
         mariadb: boolean;
         mongodb: boolean;
     },
-    theme: "light"|"dark"
+    theme: "light"|"dark";
+    closeToTray: boolean;
+    minimizeToTray: boolean;
 };

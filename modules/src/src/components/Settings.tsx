@@ -10,6 +10,8 @@ export default function Settings()
     const [autostartApache, setAutostartApache] = useState<boolean>(false);
     const [autostartMariaDb, setAutostartMariaDb] = useState<boolean>(false);
     const [autostartMongoDb, setAutostartMongoDb] = useState<boolean>(false);
+    const [closeToTray, setCloseToTray] = useState<boolean>(false);
+    const [minimizeToTray, setMinimizeToTray] = useState<boolean>(false);
     const [init, setInit] = useState<boolean>(true);
 
     useEffect(() => {
@@ -20,6 +22,8 @@ export default function Settings()
             setAutostartMariaDb(settings.autostart.mariadb);
             setAutostartMongoDb(settings.autostart.mongodb);
             setColorMode(settings.theme);
+            setCloseToTray(settings.closeToTray);
+            setMinimizeToTray(settings.minimizeToTray);
             setInit(false);
         });
 
@@ -27,6 +31,8 @@ export default function Settings()
             setAutostartApache(settings.autostart.apache);
             setAutostartMariaDb(settings.autostart.mariadb);
             setAutostartMongoDb(settings.autostart.mongodb);
+            setCloseToTray(settings.closeToTray);
+            setMinimizeToTray(settings.minimizeToTray);
             setColorMode(settings.theme);
         });
     }, []);
@@ -39,12 +45,14 @@ export default function Settings()
                     mariadb: autostartMariaDb,
                     mongodb: autostartMongoDb,
                 },
-                theme: colorMode
+                theme: colorMode,
+                closeToTray,
+                minimizeToTray
             };
             
             window.ipcRenderer.send("localhost-settings", appSettings);
         }
-    }, [autostartApache, autostartMariaDb, autostartMongoDb, colorMode]);
+    }, [autostartApache, autostartMariaDb, autostartMongoDb, colorMode, closeToTray, minimizeToTray]);
 
     return (
         <Box sx={{ width: "100%" }}>
@@ -71,6 +79,12 @@ export default function Settings()
                     <FormControlLabel control={
                         <Checkbox onChange={(e) => setColorMode(e.target.checked ? "dark" : "light")} checked={colorMode == "dark"} />
                     } label="Dark mode" />
+                    <FormControlLabel control={
+                        <Checkbox onChange={(e) => setMinimizeToTray(e.target.checked)} checked={minimizeToTray} />
+                    } label="Minimize to system tray" />
+                    <FormControlLabel control={
+                        <Checkbox onChange={(e) => setCloseToTray(e.target.checked)} checked={closeToTray} />
+                    } label="Close to system tray" />
                 </FormGroup>
             </Box>
         </Box>

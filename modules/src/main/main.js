@@ -8,6 +8,7 @@ const mongodb = require("./modules/mongodb");
 const node = require("./modules/node");
 const extras = require("./modules/extras");
 const localhost = require("./modules/localhost");
+const tray = require("./modules/tray");
 
 const appServe = app.isPackaged ? serve({
     directory: path.join(__dirname, "../out")
@@ -38,6 +39,31 @@ const createWindow = () => {
         });
     }
 
+    win.on("minimize", () => {
+        let settings = localhost.loadSettings();
+        if(settings.minimizeToTray){
+            tray.init(win);
+        }
+    });
+
+    win.on("restore", () => {
+        let settings = localhost.loadSettings();
+        if(settings.minimizeToTray){
+            tray.destroy();
+        }
+    });
+
+    win.on("close", (event) => {
+        let settings = localhost.loadSettings();
+        if(settings.closeToTray && !app.isQuiting){
+            event.preventDefault();
+            tray.init(win);
+            return false;
+        } else {
+            app.quit();
+        }
+    });
+
     return win;
 }
 
@@ -53,16 +79,12 @@ app.on("ready", () => {
     localhost.init(appWindow);
 });
 
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        dns.finish();
-        webServer.finish();
-        database.finish();
-        mongodb.finish();
-        node.finish();
-        extras.finish();
-        localhost.finish();
-
-        app.quit();
-    }
+app.on("before-quit", () => {
+    dns.finish();
+    webServer.finish();
+    database.finish();
+    mongodb.finish();
+    node.finish();
+    extras.finish();
+    localhost.finish();
 });
