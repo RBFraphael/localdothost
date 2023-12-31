@@ -3,7 +3,7 @@
     "apache": "2.4.58",
     "compass": "1.41.0",
     "composer": "2.6.6",
-    "gui": "1.6.0",
+    "gui": "1.7.0",
     "heidisql": "12.6",
     "mariadb": "11.2.2",
     "mongodb": "7.0.4",
