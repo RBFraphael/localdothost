@@ -3,12 +3,13 @@ productName: "Local.Host"
 copyright: "Copyright (c) 2023 RBFraphael"
 win:
   target: ["dir"]
-  icon: "build/icon.ico"
+  icon: "icon.ico"
 files:
   - from: .
     filter:
-      - config.json
-      - package.json
       - main
       - out
+      - config.json
+      - icon.ico
+      - package.json
 afterPack: "./build/afterPack.js"
