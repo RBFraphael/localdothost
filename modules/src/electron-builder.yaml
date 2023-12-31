@@ -11,3 +11,4 @@ files:
       - package.json
       - main
       - out
+afterPack: "./build/afterPack.js"
