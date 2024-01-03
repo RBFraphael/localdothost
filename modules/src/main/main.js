@@ -9,6 +9,7 @@ const node = require("./modules/node");
 const extras = require("./modules/extras");
 const localhost = require("./modules/localhost");
 const tray = require("./modules/tray");
+const redis = require("./modules/redis");
 
 const appServe = app.isPackaged ? serve({
     directory: path.join(__dirname, "../out")
@@ -16,8 +17,8 @@ const appServe = app.isPackaged ? serve({
 
 const createWindow = () => {
     const win = new BrowserWindow({
-        width: 780,
-        height: 550,
+        width: 870,
+        height: 580,
         title: "Local.Host",
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
@@ -77,6 +78,7 @@ app.on("ready", () => {
     node.init(appWindow);
     extras.init(appWindow);
     localhost.init(appWindow);
+    redis.init(appWindow);
 });
 
 app.on("before-quit", () => {
@@ -87,4 +89,5 @@ app.on("before-quit", () => {
     node.finish();
     extras.finish();
     localhost.finish();
+    redis.finish();
 });

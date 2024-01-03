@@ -145,6 +145,7 @@ const loadSettings = (booting = false) => {
             apache: false,
             mariadb: false,
             mongodb: false,
+            redis: false
         },
         theme: "light",
         closeToTray: false,

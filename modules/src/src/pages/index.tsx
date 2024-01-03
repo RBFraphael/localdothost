@@ -4,6 +4,7 @@ import Dns from "@/components/Dns";
 import Extras from "@/components/Extras";
 import MongoDb from "@/components/MongoDb";
 import Nvm from "@/components/Nvm";
+import Redis from "@/components/Redis";
 import Settings from "@/components/Settings";
 import TabPanel from "@/components/TabPanel";
 import WebServer from "@/components/WebServer";
@@ -34,23 +35,26 @@ export default function Home() {
                 case "database":
                     setCurrentTab(1);
                     break;
-                case "mongodb":
+                case "redis":
                     setCurrentTab(2);
                     break;
-                case "dns":
+                case "mongodb":
                     setCurrentTab(3);
                     break;
-                case "node":
+                case "dns":
                     setCurrentTab(4);
                     break;
-                case "cli":
+                case "node":
                     setCurrentTab(5);
                     break;
-                case "settings":
+                case "cli":
                     setCurrentTab(6);
                     break;
-                case "about":
+                case "settings":
                     setCurrentTab(7);
+                    break;
+                case "about":
+                    setCurrentTab(8);
                     break;
             }
         })
@@ -70,6 +74,7 @@ export default function Home() {
                         <Tabs value={currentTab} onChange={(e, tab) => setCurrentTab(tab)} aria-label="Tabs">
                             <Tab label="Web" />
                             <Tab label="Database" />
+                            <Tab label="Redis" />
                             <Tab label="MongoDB" />
                             <Tab label="DNS" />
                             <Tab label="Node" />
@@ -88,26 +93,30 @@ export default function Home() {
                     </TabPanel>
 
                     <TabPanel value={currentTab} index={2}>
-                        <MongoDb />
+                        <Redis />
                     </TabPanel>
 
                     <TabPanel value={currentTab} index={3}>
-                        <Dns />
+                        <MongoDb />
                     </TabPanel>
 
                     <TabPanel value={currentTab} index={4}>
-                        <Nvm />
+                        <Dns />
                     </TabPanel>
 
                     <TabPanel value={currentTab} index={5}>
-                        <Extras />
+                        <Nvm />
                     </TabPanel>
 
                     <TabPanel value={currentTab} index={6}>
-                        <Settings />
+                        <Extras />
                     </TabPanel>
 
                     <TabPanel value={currentTab} index={7}>
+                        <Settings />
+                    </TabPanel>
+
+                    <TabPanel value={currentTab} index={8}>
                         <About />
                     </TabPanel>
                 </Box>

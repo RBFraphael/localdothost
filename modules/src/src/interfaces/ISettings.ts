@@ -3,6 +3,7 @@ export interface ISettings {
         apache: boolean;
         mariadb: boolean;
         mongodb: boolean;
+        redis: boolean;
     },
     theme: "light"|"dark";
     closeToTray: boolean;

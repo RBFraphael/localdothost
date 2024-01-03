@@ -8,7 +8,7 @@ export default function About()
 {
     const [versions, setVersions] = useState<IVersions>({
         gui: "", apache: "", php: {}, composer: "", mariadb: "",
-        heidisql: "", acrylic: "", mongodb: "", compass: "", nvm: "",
+        heidisql: "", acrylic: "", mongodb: "", compass: "", nvm: "", redis: ""
     });
     const [latestVersion, setLatestVersion] = useState("");
     const [updateCheckStatus, setUpdateCheckStatus] = useState("");
@@ -142,6 +142,9 @@ export default function About()
                             </Typography>
                             <Typography variant="body1">
                                 <strong>NVM:</strong> { versions.nvm ?? "" }
+                            </Typography>
+                            <Typography variant="body1">
+                                <strong>Redis:</strong> { versions.redis ?? "" }
                             </Typography>
                         </Box>
                     </Box>

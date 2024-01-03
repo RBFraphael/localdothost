@@ -9,4 +9,5 @@ export interface IVersions {
     mongodb: string;
     compass: string;
     nvm: string;
+    redis: string;
 }

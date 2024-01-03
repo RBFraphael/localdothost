@@ -10,6 +10,7 @@ export default function Settings()
     const [autostartApache, setAutostartApache] = useState<boolean>(false);
     const [autostartMariaDb, setAutostartMariaDb] = useState<boolean>(false);
     const [autostartMongoDb, setAutostartMongoDb] = useState<boolean>(false);
+    const [autostartRedis, setAutostartRedis] = useState<boolean>(false);
     const [closeToTray, setCloseToTray] = useState<boolean>(false);
     const [minimizeToTray, setMinimizeToTray] = useState<boolean>(false);
     const [init, setInit] = useState<boolean>(true);
@@ -21,6 +22,7 @@ export default function Settings()
             setAutostartApache(settings.autostart.apache);
             setAutostartMariaDb(settings.autostart.mariadb);
             setAutostartMongoDb(settings.autostart.mongodb);
+            setAutostartRedis(settings.autostart.redis);
             setColorMode(settings.theme);
             setCloseToTray(settings.closeToTray);
             setMinimizeToTray(settings.minimizeToTray);
@@ -31,6 +33,7 @@ export default function Settings()
             setAutostartApache(settings.autostart.apache);
             setAutostartMariaDb(settings.autostart.mariadb);
             setAutostartMongoDb(settings.autostart.mongodb);
+            setAutostartRedis(settings.autostart.redis);
             setCloseToTray(settings.closeToTray);
             setMinimizeToTray(settings.minimizeToTray);
             setColorMode(settings.theme);
@@ -44,6 +47,7 @@ export default function Settings()
                     apache: autostartApache,
                     mariadb: autostartMariaDb,
                     mongodb: autostartMongoDb,
+                    redis: autostartRedis
                 },
                 theme: colorMode,
                 closeToTray,
@@ -52,7 +56,7 @@ export default function Settings()
             
             window.ipcRenderer.send("localhost-settings", appSettings);
         }
-    }, [autostartApache, autostartMariaDb, autostartMongoDb, colorMode, closeToTray, minimizeToTray]);
+    }, [autostartApache, autostartMariaDb, autostartMongoDb, autostartRedis, colorMode, closeToTray, minimizeToTray]);
 
     return (
         <Box sx={{ width: "100%" }}>
@@ -70,6 +74,9 @@ export default function Settings()
                     <FormControlLabel control={
                         <Checkbox onChange={(e) => setAutostartMongoDb(e.target.checked)} checked={autostartMongoDb} />
                     } label="Autostart noSQL Database Server" />
+                    <FormControlLabel control={
+                        <Checkbox onChange={(e) => setAutostartRedis(e.target.checked)} checked={autostartRedis} />
+                    } label="Autostart Redis In-Memory Database Server" />
                 </FormGroup>
             </Box>
 

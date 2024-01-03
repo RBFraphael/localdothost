@@ -19,6 +19,10 @@ const init = (appWindow) => {
                 click: () => { restoreOnTab(appWindow, "database"); }
             },
             {
+                label: "Redis",
+                click: () => { restoreOnTab(appWindow, "redis"); }
+            },
+            {
                 label: "MongoDB",
                 click: () => { restoreOnTab(appWindow, "mongodb"); }
             },
