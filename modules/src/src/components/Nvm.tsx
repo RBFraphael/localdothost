@@ -193,16 +193,19 @@ export default function Nvm()
                                 </List>
                             </Paper>
                         </Box>
+                        { installedVersions.length > 0 ? (
                         <Box sx={{ width: "30%" }}>
+                            <Typography variant="body1" sx={{ p: "0.5rem" }}>Active version:</Typography>
                             <FormControl fullWidth>
-                                <InputLabel id="nvm-active-version-label">Active version</InputLabel>
-                                <Select labelId="nvm-active-version-label" id="nvm-active-version" value={currentVersion} label="Active version" onChange={(e) => onUseVersion(e.target.value)}>
+                                {/* <InputLabel id="nvm-active-version-label">Active version</InputLabel> */}
+                                <Select labelId="nvm-active-version-label" id="nvm-active-version" value={currentVersion} onChange={(e) => onUseVersion(e.target.value)}>
                                     { installedVersions.map((version, index) => (
                                         <MenuItem key={index} value={version}>v{version}</MenuItem>
                                     )) }
                                 </Select>
                             </FormControl>
                         </Box>
+                        ) : null }
                     </Box>
                 ) }
             </Box>
