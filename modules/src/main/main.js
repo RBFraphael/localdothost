@@ -40,6 +40,11 @@ const createWindow = () => {
         });
     }
 
+    app.on("second-instance", (e, args, dir) => {
+        if(!win.isVisible()){ win.show(); }
+        win.focus();
+    });
+
     win.on("minimize", () => {
         let settings = localhost.loadSettings();
         if(settings.minimizeToTray){
@@ -69,6 +74,12 @@ const createWindow = () => {
 }
 
 app.on("ready", () => {
+    let mainInstance = app.requestSingleInstanceLock();
+    if(!mainInstance){
+        app.quit();
+        return;
+    }
+
     let appWindow = createWindow();
 
     dns.init(appWindow);
