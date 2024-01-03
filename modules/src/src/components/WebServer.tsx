@@ -3,14 +3,13 @@ import { Box, Button, CircularProgress, IconButton, List, ListItem, ListItemText
 import { useEffect, useState } from "react";
 import LinkIcon from "@mui/icons-material/Launch";
 import { ISettings } from "@/interfaces/ISettings";
+import { OpenInBrowser, PlayArrow, Settings, Stop } from "@mui/icons-material";
 
 export default function WebServer()
 {
     const [status, setStatus] = useState("stopped");
     const [listeningPorts, setListeningPorts] = useState<string[]>([]);
     const [pids, setPids] = useState<string[]>([]);
-
-    const [apacheWebsites, setApacheWebsites] = useState([]);
 
     const [apacheSettingsAnchorEl, setApacheSettingsAnchorEl] = useState(null);
     const apacheSettingsOpen = Boolean(apacheSettingsAnchorEl);
@@ -78,15 +77,24 @@ export default function WebServer()
                     <Box sx={{ width: "49%" }}>
                         <Box sx={{ width: "100%", marginBottom: "1rem" }}>
                             { status == "stopped" && (
-                                <Button onClick={startWebServer} variant="contained" color="success">Start Web Server</Button>
+                                <Button onClick={startWebServer} variant="contained" color="success">
+                                    <PlayArrow sx={{ marginRight: ".5rem" }} />
+                                    Start Web Server
+                                </Button>
                             ) }
                             { (status == "starting" || status == "stopping") && (
                                 <CircularProgress />
                             ) }
                             { status == "running" && (
                                 <>
-                                    <Button onClick={stopWebServer} variant="contained" color="error" sx={{ marginRight: "1rem" }}>Stop Web Server</Button>
-                                    <Button onClick={openWebServer} variant="contained" color="secondary">Browse</Button>
+                                    <Button onClick={stopWebServer} variant="contained" color="error" sx={{ marginRight: "1rem" }}>
+                                        <Stop sx={{ marginRight: ".5rem" }} />
+                                        Stop Web Server
+                                    </Button>
+                                    <Button onClick={openWebServer} variant="contained" color="secondary">
+                                        <OpenInBrowser sx={{ marginRight: ".5rem" }} />
+                                        Browse
+                                    </Button>
                                 </>
                             ) }
                         </Box>
@@ -105,7 +113,10 @@ export default function WebServer()
 
                         <Box sx={{ marginBottom:"1rem", display: "flex", flexDirection: "row", flexWrap: "wrap", columnGap: "1rem", rowGap: "1rem" }}>
                             <Box>
-                                <Button variant="contained" color="primary" onClick={openApacheSettings}>Apache Settings</Button>
+                                <Button variant="contained" color="primary" onClick={openApacheSettings}>
+                                    <Settings sx={{ marginRight: ".5rem" }} />
+                                    Apache Settings
+                                </Button>
                                 <Menu id="apache-settings-menu" open={apacheSettingsOpen} anchorEl={apacheSettingsAnchorEl} onClose={() => onApacheSettingsClose()}>
                                     <MenuItem onClick={() => onApacheSettingsClose("apache-config", "apache")}>Apache config &lt;httpd.conf&gt;</MenuItem>
                                     <MenuItem onClick={() => onApacheSettingsClose("apache-config", "apache-ssl")}>Apache SSL config &lt;httpd-ssl.conf&gt;</MenuItem>
@@ -116,7 +127,10 @@ export default function WebServer()
                                 </Menu>
                             </Box>
                             <Box>
-                                <Button variant="contained" color="primary" onClick={openPhpSettings}>PHP Settings</Button>
+                                <Button variant="contained" color="primary" onClick={openPhpSettings}>
+                                    <Settings sx={{ marginRight: ".5rem" }} />
+                                    PHP Settings
+                                </Button>
                                 <Menu id="php-settings-menu" open={phpSettingsOpen} anchorEl={phpSettingsAnchorEl} onClose={() => onPhpSettingsClose()}>
                                     <MenuItem onClick={() => onPhpSettingsClose("apache-config", "php56")}>PHP 5.6 &lt;php.ini&gt;</MenuItem>
                                     <MenuItem onClick={() => onPhpSettingsClose("apache-config", "php70")}>PHP 7.0 &lt;php.ini&gt;</MenuItem>
@@ -129,26 +143,6 @@ export default function WebServer()
                             </Box>
                         </Box>
                     </Box>
-                    {/* <Box sx={{ width: "49%" }}>
-                        { status == "running" && (
-                            <Paper>
-                                <Typography sx={{ p: "0.5rem" }}>Websites:</Typography>
-                                <List sx={{ width: "100%", height: 220, overflow: "auto", '& ul': { padding: 0 } }} subheader={<li />} dense={true}>
-                                    { apacheWebsites.sort().map((site, i) => (
-                                        <ListItem sx={{ ':not(:last-child)': { paddingTop: ".5rem", paddingBottom: ".5rem" } }} key={`site-${i}`} secondaryAction={
-                                            <>
-                                                <Button variant="outlined" size="small" aria-label="open" onClick={() => window.ipcRenderer.send("apache-open-site", `http://${site}`)}>
-                                                    Open <LinkIcon />
-                                                </Button>
-                                            </>
-                                        }>
-                                            <ListItemText primary={`http://${site}`}></ListItemText>
-                                        </ListItem>
-                                    )) }
-                                </List>
-                            </Paper>
-                        ) }
-                    </Box> */}
                 </Box>
             </Box>
         </>

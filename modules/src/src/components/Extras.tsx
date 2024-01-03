@@ -1,3 +1,4 @@
+import { InstallDesktop, RemoveFromQueue } from "@mui/icons-material";
 import { Box, Button, Chip, CircularProgress, FormControl, InputLabel, MenuItem, Select, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -57,13 +58,19 @@ export default function Extras()
                         </Typography>
 
                         { status == "uninstalled" && (
-                            <Button onClick={() => extras("install")} variant="contained" color="success">Install</Button>
+                            <Button onClick={() => extras("install")} variant="contained" color="success">
+                                <InstallDesktop sx={{ marginRight: ".5rem" }} />
+                                Install
+                            </Button>
                         ) }
                         { (status == "installing" || status == "uninstalling") && (
                             <CircularProgress />
                         ) }
                         { status == "installed" && (
-                            <Button onClick={() => extras("uninstall")} variant="contained" color="error">Uninstall</Button>
+                            <Button onClick={() => extras("uninstall")} variant="contained" color="error">
+                                <RemoveFromQueue sx={{ marginRight: ".5rem" }} />
+                                Uninstall
+                            </Button>
                         )}
                     </Box>
                     { status == "installed" ? (

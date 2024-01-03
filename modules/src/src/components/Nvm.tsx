@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
 import ClearIcon from "@mui/icons-material/Clear";
 import { INvmVersion } from "@/interfaces/INvmVersion";
+import { InstallDesktop, RemoveFromQueue, Settings } from "@mui/icons-material";
 
 export default function Nvm()
 {
@@ -115,17 +116,26 @@ export default function Nvm()
                 <Box sx={{ marginBottom: "1rem", display: "flex", flexDirection: "row", columnGap: "1rem" }}>
                     <Box>
                         { status == "uninstalled" && (
-                            <Button onClick={() => nvm("install")} variant="contained" color="success">Install</Button>
+                            <Button onClick={() => nvm("install")} variant="contained" color="success">
+                                <InstallDesktop sx={{ marginRight: ".5rem" }} />
+                                Install
+                            </Button>
                         ) }
                         { (status == "installing" || status == "uninstalling") && (
                             <CircularProgress />
                         ) }
                         { status == "installed" && (
-                            <Button onClick={() => nvm("uninstall")} variant="contained" color="error">Uninstall</Button>
+                            <Button onClick={() => nvm("uninstall")} variant="contained" color="error">
+                                <RemoveFromQueue sx={{ marginRight: ".5rem" }} />
+                                Uninstall
+                            </Button>
                         )}
                     </Box>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={openNvmSettings}>NVM Settings</Button>
+                        <Button variant="contained" color="primary" onClick={openNvmSettings}>
+                            <Settings sx={{ marginRight: ".5rem" }} />
+                            NVM Settings
+                        </Button>
                         <Menu id="nvm-settings-menu" open={nvmSettingsOpen} anchorEl={nvmSettingsAnchorEl} onClose={() => onNvmSettingsClose()}>
                             <MenuItem onClick={() => onNvmSettingsClose("nvm-config")}>Open NVM config. file</MenuItem>
                             <MenuItem onClick={() => onNvmSettingsClose("nvm-dir", "nvm")}>Open NVM directory</MenuItem>

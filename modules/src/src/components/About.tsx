@@ -3,6 +3,7 @@ import Logo from "../assets/logo.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { IVersions } from "@/interfaces/IVersions";
+import { Download, GitHub, Help, InstallDesktop, Update } from "@mui/icons-material";
 
 export default function About()
 {
@@ -119,8 +120,10 @@ export default function About()
                         <Box>
                             { (updateCheckStatus == "available" || updateCheckStatus == "downloading") && (
                                 <Button variant="contained" onClick={() => downloadLatestVersion()} size="small" disabled={updateCheckStatus == "downloading"}>
-                                    { updateCheckStatus == "downloading" && (
+                                    { updateCheckStatus == "downloading" ? (
                                         <CircularProgress color="secondary" size={13} sx={{ marginRight: ".5rem" }} />
+                                    ) : (
+                                        <Download sx={{ marginRight: ".5rem" }} fontSize="small" />
                                     ) }
                                     Download version { latestVersion }
                                 </Button>
@@ -128,24 +131,35 @@ export default function About()
 
                             { (updateCheckStatus == "" || updateCheckStatus == "updated" || updateCheckStatus == "error" || updateCheckStatus == "checking") && (
                                 <Button variant="contained" onClick={() => checkForUpdates()} size="small" disabled={updateCheckStatus == "checking"}>
-                                    { updateCheckStatus == "checking" && (
+                                    { updateCheckStatus == "checking" ? (
                                         <CircularProgress size={13} sx={{ marginRight: ".5rem" }} />
+                                    ) : (
+                                        <Update sx={{ marginRight: ".5rem" }} fontSize="small" />
                                     ) }
                                     Check for updates
                                 </Button>
                             ) }
                             
                             { updateCheckStatus == "ready" && (
-                                <Button variant="contained" onClick={() => updateDialog()} size="small">Install version { latestVersion }</Button>
+                                <Button variant="contained" onClick={() => updateDialog()} size="small">
+                                    <InstallDesktop sx={{ marginRight: ".5rem" }} fontSize="small" />
+                                    Install version { latestVersion }
+                                </Button>
                             ) }
                         </Box>
 
                         <Box>
-                            <Button variant="contained" onClick={() => onlineHelp()} size="small">Online Help</Button>
+                            <Button variant="contained" onClick={() => onlineHelp()} size="small">
+                                <Help sx={{ marginRight: ".5rem" }} fontSize="small" />
+                                Online Help
+                            </Button>
                         </Box>
 
                         <Box>
-                            <Button variant="contained" onClick={() => githubRepository()} size="small">GitHub Repository</Button>
+                            <Button variant="contained" onClick={() => githubRepository()} size="small">
+                                <GitHub sx={{ marginRight: ".5rem" }} fontSize="small" />
+                                GitHub Repository
+                            </Button>
                         </Box>
                     </Box>
                     

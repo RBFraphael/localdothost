@@ -1,4 +1,5 @@
 import { ISettings } from "@/interfaces/ISettings";
+import { OpenInBrowser, PlayArrow, Settings, Stop, Wysiwyg } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -74,16 +75,28 @@ export default function Database()
                 <Typography variant="h5" sx={{ marginBottom: "1rem" }}>Database</Typography>
                 <Box sx={{ width: "100%", marginBottom: "1rem" }}>
                     { status == "stopped" && (
-                        <Button onClick={startDbServer} variant="contained" color="success">Start Database Server</Button>
+                        <Button onClick={startDbServer} variant="contained" color="success">
+                            <PlayArrow sx={{ marginRight: ".5rem" }} />
+                            Start Database Server
+                        </Button>
                     ) }
                     { (status == "starting" || status == "stopping") && (
                         <CircularProgress />
                     ) }
                     { status == "running" && (
                         <>
-                            <Button onClick={stopDbServer} variant="contained" color="error" sx={{ marginRight: "1rem" }}>Stop Database Server</Button>
-                            <Button onClick={openDbServer} variant="contained" color="secondary" sx={{ marginRight: "1rem" }}>Browse</Button>
-                            <Button onClick={() => openHeidiSql()} variant="contained" color="secondary">Open Heidi SQL</Button>
+                            <Button onClick={stopDbServer} variant="contained" color="error" sx={{ marginRight: "1rem" }}>
+                                <Stop sx={{ marginRight: ".5rem" }} />
+                                Stop Database Server
+                            </Button>
+                            <Button onClick={openDbServer} variant="contained" color="secondary" sx={{ marginRight: "1rem" }}>
+                                <OpenInBrowser sx={{ marginRight: ".5rem" }} />
+                                Browse
+                            </Button>
+                            <Button onClick={() => openHeidiSql()} variant="contained" color="secondary">
+                                <Wysiwyg sx={{ marginRight: ".5rem" }} />
+                                Open Heidi SQL
+                            </Button>
                         </>
                     ) }
                 </Box>
@@ -102,14 +115,20 @@ export default function Database()
 
                 <Box sx={{ marginBottom: "1rem", display: "flex", flexDirection: "row", flexWrap: "wrap", columnGap: "1rem", rowGap: "1rem" }}>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={openMariadbSettings}>Database Settings</Button>
+                        <Button variant="contained" color="primary" onClick={openMariadbSettings}>
+                            <Settings sx={{ marginRight: ".5rem" }} />
+                            Database Settings
+                        </Button>
                         <Menu id="mariadb-settings-menu" open={mariadbSettingsOpen} anchorEl={mariadbSettingsAnchorEl} onClose={() => onMariadbSettingsClose()}>
                             <MenuItem onClick={() => onMariadbSettingsClose("mariadb-config", "mariadb")}>MariaDB config &lt;my.cnf&gt;</MenuItem>
                             <MenuItem onClick={() => onMariadbSettingsClose("mariadb-dir", "mariadb")}>Open MariaDB directory</MenuItem>
                         </Menu>
                     </Box>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={openPmaSettings}>Web Manager Settings</Button>
+                        <Button variant="contained" color="primary" onClick={openPmaSettings}>
+                            <Settings sx={{ marginRight: ".5rem" }} />
+                            Web Manager Settings
+                        </Button>
                         <Menu id="pma-settings-menu" open={pmaSettingsOpen} anchorEl={pmaSettingsAnchorEl} onClose={() => onPmaSettingsClose()}>
                             <MenuItem onClick={() => onPmaSettingsClose("mariadb-config", "phpmyadmin")}>phpMyAdmin &lt;config.inc.php&gt;</MenuItem>
                             <MenuItem onClick={() => onPmaSettingsClose("mariadb-dir", "phpmyadmin")}>Open phpMyAdmin directory</MenuItem>

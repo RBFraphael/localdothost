@@ -1,4 +1,5 @@
 import { ISettings } from "@/interfaces/ISettings";
+import { PlayArrow, Settings, Stop, Wysiwyg } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -56,15 +57,24 @@ export default function MongoDb()
                 <Typography variant="h5" sx={{ marginBottom: "1rem" }}>MongoDB</Typography>
                 <Box sx={{ width: "100%", marginBottom: "1rem" }}>
                     { status == "stopped" && (
-                        <Button onClick={startDbServer} variant="contained" color="success">Start Database Server</Button>
+                        <Button onClick={startDbServer} variant="contained" color="success">
+                            <PlayArrow sx={{ marginRight: ".5rem" }} />
+                            Start Database Server
+                        </Button>
                     ) }
                     { (status == "starting" || status == "stopping") && (
                         <CircularProgress />
                     ) }
                     { status == "running" && (
                         <>
-                            <Button onClick={stopDbServer} variant="contained" color="error" sx={{ marginRight: "1rem" }}>Stop Database Server</Button>
-                            <Button onClick={openDbServer} variant="contained" color="secondary">Browse</Button>
+                            <Button onClick={stopDbServer} variant="contained" color="error" sx={{ marginRight: "1rem" }}>
+                                <Stop sx={{ marginRight: ".5rem" }} />
+                                Stop Database Server
+                            </Button>
+                            <Button onClick={openDbServer} variant="contained" color="secondary">
+                                <Wysiwyg sx={{ marginRight: ".5rem" }} />
+                                Browse
+                            </Button>
                         </>
                     ) }
                 </Box>
@@ -83,7 +93,10 @@ export default function MongoDb()
 
                 <Box sx={{ marginBottom: "1rem", display: "flex", flexDirection: "row", flexWrap: "wrap", columnGap: "1rem", rowGap: "1rem" }}>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={openMongoDbSettings}>Database Settings</Button>
+                        <Button variant="contained" color="primary" onClick={openMongoDbSettings}>
+                            <Settings sx={{ marginRight: ".5rem" }} />
+                            Database Settings
+                        </Button>
                         <Menu id="mongodb-settings-menu" open={mongoDbSettingsOpen} anchorEl={mongoDbSettingsAnchorEl} onClose={() => onMongoDbSettingsClose()}>
                             <MenuItem onClick={() => onMongoDbSettingsClose("mongodb-config", "mongod")}>MongoDB config &lt;mongod.cnf&gt;</MenuItem>
                             <MenuItem onClick={() => onMongoDbSettingsClose("mongodb-dir", "mongodb")}>Open MongoDB directory</MenuItem>

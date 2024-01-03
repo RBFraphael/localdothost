@@ -1,3 +1,4 @@
+import { InstallDesktop, PlayArrow, RemoveFromQueue, Replay, Settings, Stop } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -72,13 +73,19 @@ export default function Dns()
                     </Typography>
 
                     { serviceStatus == "uninstalled" && (
-                        <Button onClick={() => acrylicService("install")} variant="contained" color="success">Install</Button>
+                        <Button onClick={() => acrylicService("install")} variant="contained" color="success">
+                            <InstallDesktop sx={{ marginRight: ".5rem" }} />
+                            Install
+                        </Button>
                     ) }
                     { (serviceStatus == "installing" || serviceStatus == "uninstalling") && (
                         <CircularProgress />
                     ) }
                     { serviceStatus == "installed" && (
-                        <Button onClick={() => acrylicService("uninstall")} variant="contained" color="error">Uninstall</Button>
+                        <Button onClick={() => acrylicService("uninstall")} variant="contained" color="error">
+                            <RemoveFromQueue sx={{ marginRight: ".5rem" }} />
+                            Uninstall
+                        </Button>
                     )}
                 </Box>
 
@@ -97,15 +104,24 @@ export default function Dns()
                         </Typography>
 
                         { serverStatus == "stopped" && (
-                            <Button onClick={() => acrylicServer("start")} variant="contained" color="success">Start DNS Proxy Server</Button>
+                            <Button onClick={() => acrylicServer("start")} variant="contained" color="success">
+                                <PlayArrow sx={{ marginRight: ".5rem" }} />
+                                Start DNS Proxy Server
+                            </Button>
                         ) }
                         { (serverStatus == "starting" || serverStatus == "stopping" || serverStatus == "restarting") && (
                             <CircularProgress />
                         ) }
                         { serverStatus == "running" && (
                             <>
-                                <Button onClick={() => acrylicServer("stop")} variant="contained" color="error" sx={{ marginRight: "1rem" }}>Stop DNS Proxy Server</Button>
-                                <Button onClick={() => acrylicServer("restart")} variant="contained" color="secondary" sx={{ marginRight: "1rem" }}>Restart DNS Proxy Server</Button>
+                                <Button onClick={() => acrylicServer("stop")} variant="contained" color="error" sx={{ marginRight: "1rem" }}>
+                                    <Stop sx={{ marginRight: ".5rem" }} />
+                                    Stop DNS Proxy Server
+                                </Button>
+                                <Button onClick={() => acrylicServer("restart")} variant="contained" color="secondary" sx={{ marginRight: "1rem" }}>
+                                    <Replay sx={{ marginRight: ".5rem" }} />
+                                    Restart DNS Proxy Server
+                                </Button>
                             </>
                         ) }
                     </Box>
@@ -113,7 +129,10 @@ export default function Dns()
 
                 <Box sx={{ marginBottom: "1rem", display: "flex", flexDirection: "row", flexWrap: "wrap", columnGap: "1rem", rowGap: "1rem" }}>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={openAcrylicSettings}>Acrylic Settings</Button>
+                        <Button variant="contained" color="primary" onClick={openAcrylicSettings}>
+                            <Settings sx={{ marginRight: ".5rem" }} />
+                            Acrylic Settings
+                        </Button>
                         <Menu id="acrylic-settings-menu" open={acrylicSettingsOpen} anchorEl={acrylicSettingsAnchorEl} onClose={() => onAcrylicSettingsClose()}>
                             <MenuItem onClick={() => onAcrylicSettingsClose("acrylic-server", "cache")}>Clean DNS cache</MenuItem>
                             <MenuItem onClick={() => onAcrylicSettingsClose("acrylic-config", "acrylic")}>Open Acrylic config. File</MenuItem>

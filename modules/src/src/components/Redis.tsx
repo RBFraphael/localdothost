@@ -1,4 +1,5 @@
 import { ISettings } from "@/interfaces/ISettings";
+import { PlayArrow, Settings, Stop } from "@mui/icons-material";
 import { Box, Button, CircularProgress, Menu, MenuItem, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -52,14 +53,20 @@ export default function Redis()
                 <Typography variant="h5" sx={{ marginBottom: "1rem" }}>Redis In-Memory Database Server</Typography>
                 <Box sx={{ width: "100%", marginBottom: "1rem" }}>
                     { status == "stopped" && (
-                        <Button onClick={startRedis} variant="contained" color="success">Start Redis Server</Button>
+                        <Button onClick={startRedis} variant="contained" color="success">
+                            <PlayArrow sx={{ marginRight: ".5rem" }} />
+                            Start Redis Server
+                        </Button>
                     ) }
                     { (status == "starting" || status == "stopping") && (
                         <CircularProgress />
                     ) }
                     { status == "running" && (
                         <>
-                            <Button onClick={stopRedis} variant="contained" color="error" sx={{ marginRight: "1rem" }}>Stop Redis Server</Button>
+                            <Button onClick={stopRedis} variant="contained" color="error" sx={{ marginRight: "1rem" }}>
+                                <Stop sx={{ marginRight: ".5rem" }} />
+                                Stop Redis Server
+                            </Button>
                         </>
                     ) }
                 </Box>
@@ -78,7 +85,10 @@ export default function Redis()
 
                 <Box sx={{ marginBottom: "1rem", display: "flex", flexDirection: "row", flexWrap: "wrap", columnGap: "1rem", rowGap: "1rem" }}>
                     <Box>
-                        <Button variant="contained" color="primary" onClick={openRedisSettings}>Redis Settings</Button>
+                        <Button variant="contained" color="primary" onClick={openRedisSettings}>
+                            <Settings sx={{ marginRight: ".5rem" }} />
+                            Redis Settings
+                        </Button>
                         <Menu id="redis-settings-menu" open={redisSettingsOpen} anchorEl={redisSettingsAnchorEl} onClose={() => onRedisSettingsClose()}>
                             <MenuItem onClick={() => onRedisSettingsClose("redis-config", "")}>Redis config &lt;redis.cnf&gt;</MenuItem>
                             <MenuItem onClick={() => onRedisSettingsClose("redis-dir", "")}>Open Redis directory</MenuItem>
