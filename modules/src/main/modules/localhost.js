@@ -170,6 +170,10 @@ const onlineHelp = () => {
     shell.openExternal("https://github.com/RBFraphael/localdothost/wiki");
 };
 
+const repository = () => {
+    shell.openExternal("https://github.com/RBFraphael/localdothost");
+};
+
 const init = (appWindow) => {
     ipcMain.on("localhost-boot", (e) => { loadSettings(true); });
     ipcMain.on("localhost-versions", (e, checkUpdates = false) => { getVersions(checkUpdates); });
@@ -178,6 +182,7 @@ const init = (appWindow) => {
     ipcMain.on("localhost-apply-update", (e) => { installUpdatePackage(appWindow); });
     ipcMain.on("localhost-settings", (e, settings) => { saveSettings(settings); });
     ipcMain.on("localhost-help", (e) => { onlineHelp(); });
+    ipcMain.on("localhost-repository", (e) => { repository(); });
 
     localhostStatus.on("status", (status) => {
         appWindow.webContents.send("localhost-status", status);

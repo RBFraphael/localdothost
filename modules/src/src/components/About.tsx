@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from "@mui/material";
+import { Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from "@mui/material";
 import Logo from "../assets/logo.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ export default function About()
         gui: "", apache: "", php: {}, composer: "", mariadb: "",
         heidisql: "", acrylic: "", mongodb: "", compass: "", nvm: "", redis: ""
     });
+    const [phpVersions, setPhpVersions] = useState<string[]>([]);
     const [latestVersion, setLatestVersion] = useState("");
     const [updateCheckStatus, setUpdateCheckStatus] = useState("");
     const [userUpdateCheck, setUserUpdateCheck] = useState(false);
@@ -46,11 +47,16 @@ export default function About()
         window.ipcRenderer.send("localhost-help");
     };
 
+    const githubRepository = () => {
+        window.ipcRenderer.send("localhost-repository");
+    };
+
     useEffect(() => {
         window.ipcRenderer.send("localhost-versions", true);
 
         window.ipcRenderer.on("localhost-versions", (e: any, versions: IVersions) => {
             setVersions(versions);
+            setPhpVersions(Object.values(versions.php));
         });
 
         window.ipcRenderer.on("localhost-status", (e: any, status: string) => {
@@ -60,7 +66,6 @@ export default function About()
         window.ipcRenderer.on("localhost-available", (e: any, version: string) => {
             setLatestVersion(version);
         });
-
     }, []);
 
     useEffect(() => {
@@ -99,78 +104,89 @@ export default function About()
                 <Typography variant="h5" sx={{ marginBottom: "1rem" }}>About</Typography>
 
                 <Box sx={{ width: "100%", marginBottom: "1rem" }}>
+
+                    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1rem" }}>
+                        <Box>
+                            <Image src={Logo} alt="Logo" width={100} height={100} />
+                        </Box>
+                        <Box sx={{ textAlign: "center" }}>
+                            <Typography variant="h4" sx={{fontSize:"1.8rem"}}>Local.Host { versions.gui }</Typography>
+                            <Typography variant="body1">by RBFraphael &lt;rbfraphael@gmail.com&gt;</Typography>
+                        </Box>
+                    </Box>
+
+                    <Box sx={{ display: "flex", gap: "1rem", justifyContent: "center", marginBottom: "1rem" }}>
+                        <Box>
+                            { (updateCheckStatus == "available" || updateCheckStatus == "downloading") && (
+                                <Button variant="contained" onClick={() => downloadLatestVersion()} size="small" disabled={updateCheckStatus == "downloading"}>
+                                    { updateCheckStatus == "downloading" && (
+                                        <CircularProgress color="secondary" size={13} sx={{ marginRight: ".5rem" }} />
+                                    ) }
+                                    Download version { latestVersion }
+                                </Button>
+                            ) }
+
+                            { (updateCheckStatus == "" || updateCheckStatus == "updated" || updateCheckStatus == "error" || updateCheckStatus == "checking") && (
+                                <Button variant="contained" onClick={() => checkForUpdates()} size="small" disabled={updateCheckStatus == "checking"}>
+                                    { updateCheckStatus == "checking" && (
+                                        <CircularProgress size={13} sx={{ marginRight: ".5rem" }} />
+                                    ) }
+                                    Check for updates
+                                </Button>
+                            ) }
+                            
+                            { updateCheckStatus == "ready" && (
+                                <Button variant="contained" onClick={() => updateDialog()} size="small">Install version { latestVersion }</Button>
+                            ) }
+                        </Box>
+
+                        <Box>
+                            <Button variant="contained" onClick={() => onlineHelp()} size="small">Online Help</Button>
+                        </Box>
+
+                        <Box>
+                            <Button variant="contained" onClick={() => githubRepository()} size="small">GitHub Repository</Button>
+                        </Box>
+                    </Box>
                     
-                    <Box sx={{ width: "100%", display: "flex", flexDirection: "row", gap: "1rem" }}>
-                        <Box sx={{ flexBasis: "20%" }}>
-                            <Image src={Logo} alt="Logo" width={150} height={150} style={{ marginLeft: "auto", marginRight: "auto", marginBottom: "1rem" }} />
-                        </Box>
-                        <Box sx={{ flexBasis: "40%" }}>
+                    <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                        <Box sx={{ flexBasis: "30%" }}>
                             <Typography variant="body1">
-                                <strong>Developed by:</strong> RBFraphael &lt;rbfraphael@gmail.com&gt;
+                                <strong>Apache:</strong> { versions.apache ? <Chip label={versions.apache} size="small" /> : null }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>Github URL:</strong> https://github.com/rbfraphael
+                                <strong>PHP:</strong>
+                                { phpVersions.slice(0, phpVersions.length/2).map((version) => ( <Chip key={version} label={version} size="small" /> )) }
+                                <br />
+                                { phpVersions.slice(phpVersions.length/2).map((version) => ( <Chip key={version} label={version} size="small" /> )) }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>GUI Version:</strong> { versions.gui ?? "" }
+                                <strong>Composer:</strong> { versions.composer ? <Chip label={versions.composer} size="small" /> : null }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>Apache:</strong> { versions.apache ?? "" }
+                                <strong>MariaDB:</strong> { versions.mariadb ? <Chip label={versions.mariadb} size="small" /> : null }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>PHP:</strong> { versions.php ? Object.values(versions.php).join("; ") : "" }
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Composer:</strong> { versions.composer ?? "" }
+                                <strong>HeidiSQL:</strong> { versions.heidisql ? <Chip label={versions.heidisql} size="small" /> : null }
                             </Typography>
                         </Box>
-                        <Box sx={{ flexBasis: "40%" }}>
+                        <Box sx={{ flexBasis: "30%" }}>
                             <Typography variant="body1">
-                                <strong>MariaDB:</strong> { versions.mariadb ?? "" }
+                                <strong>Redis:</strong> { versions.redis ? <Chip label={versions.redis} size="small" /> : null }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>HeidiSQL:</strong> { versions.heidisql ?? "" }
+                                <strong>Acrylic DNS:</strong> { versions.acrylic ? <Chip label={versions.acrylic} size="small" /> : null }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>Acrylic DNS:</strong> { versions.acrylic ?? "" }
+                                <strong>MongoDB:</strong> { versions.mongodb ? <Chip label={versions.mongodb} size="small" /> : null }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>MongoDB:</strong> { versions.mongodb ?? "" }
+                                <strong>MongoDB Compass:</strong> { versions.compass ? <Chip label={versions.compass} size="small" /> : null }
                             </Typography>
                             <Typography variant="body1">
-                                <strong>MongoDB Compass:</strong> { versions.compass ?? "" }
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>NVM:</strong> { versions.nvm ?? "" }
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Redis:</strong> { versions.redis ?? "" }
+                                <strong>NVM:</strong> { versions.nvm ? <Chip label={versions.nvm} size="small" /> : null }
                             </Typography>
                         </Box>
-                    </Box>
-                </Box>
-
-                <Box sx={{ display: "flex", gap: "1rem" }}>
-                    <Box>
-                        { updateCheckStatus == "checking" && (
-                            <CircularProgress />
-                        ) }
-                        { updateCheckStatus == "available" && (
-                            <Button variant="contained" onClick={() => downloadLatestVersion()}>Download version { latestVersion }</Button>
-                        ) }
-                        { (updateCheckStatus == "" || updateCheckStatus == "updated" || updateCheckStatus == "error") && (
-                            <Button variant="contained" onClick={() => checkForUpdates()}>Check for updates</Button>
-                        ) }
-                        { updateCheckStatus == "downloading" && (
-                            <CircularProgress color="secondary" />
-                        ) }
-                        { updateCheckStatus == "ready" && (
-                            <Button variant="contained" onClick={() => updateDialog()}>Install version { latestVersion }</Button>
-                        ) }
-                    </Box>
-
-                    <Box>
-                        <Button variant="contained" onClick={() => onlineHelp()}>Online Help</Button>
                     </Box>
                 </Box>
             </Box>
