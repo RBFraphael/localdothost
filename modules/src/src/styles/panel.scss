@@ -1,14 +1,13 @@
 .panel {
     display: flex;
-    gap: 1rem;
+    // gap: 1rem;
     flex-direction: row;
-    padding: 1rem;
+    // padding: 1rem;
     width: 100vw;
     height: 100vh;
 
     .navbar {
         flex-basis: 90px;
-        border-radius: .5rem;
         background: linear-gradient(to bottom, #382a9a 0%, #741eb1 100%);
         flex-grow: 0;
         flex-shrink: 0;
@@ -51,5 +50,6 @@
     .content-wrapper {
         flex-grow: 1;
         flex-shrink: 1;
+        padding: .5rem;
     }
 }
