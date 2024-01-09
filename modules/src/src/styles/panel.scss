@@ -1,0 +1,55 @@
+.panel {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+    padding: 1rem;
+    width: 100vw;
+    height: 100vh;
+
+    .navbar {
+        flex-basis: 90px;
+        border-radius: .5rem;
+        background: linear-gradient(to bottom, #382a9a 0%, #741eb1 100%);
+        flex-grow: 0;
+        flex-shrink: 0;
+        padding: .5rem;
+        display: flex;
+        flex-direction: column;
+        
+        .inner {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            overflow-x: hidden;
+            overflow-y: auto;
+            // padding-right: .5rem;
+
+            button {
+                display: flex;
+                flex-direction: column;
+                font-size: .65rem;
+            }
+
+            &::-webkit-scrollbar {
+                width: .5rem;
+            }
+
+            /* Track */
+            &::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0);
+                padding: 10px;
+            }
+
+            /* Handle */
+            &::-webkit-scrollbar-thumb {
+                background: #FFF;
+                border-radius: .25rem;
+            }
+        }
+    }
+
+    .content-wrapper {
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+}

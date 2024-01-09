@@ -38,6 +38,7 @@
     "concurrently": "^8.2.2",
     "electron": "^28.1.0",
     "electron-builder": "^24.9.1",
+    "sass": "^1.69.7",
     "typescript": "^5.3.3"
   }
 }
