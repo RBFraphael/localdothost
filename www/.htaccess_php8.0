@@ -1,3 +1,0 @@
-<Files ~ "\.php$">
-    FcgidWrapper ${PHP80_CGI} .php
-</Files>
