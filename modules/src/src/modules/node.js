@@ -8,6 +8,7 @@ const { shell, ipcMain } = require("electron");
 const axios = require("axios");
 
 const nvmDir = path.join(getModulesDir(), "/nvm");
+const nvmExe = path.join(nvmDir, "nvm.exe");
 const nvmSymlinkDir = path.join(getModulesDir(), "nodejs");
 const nvmStatus = new EventEmitter();
 
@@ -143,19 +144,19 @@ const getCurrentVersion = () => {
 };
 
 const install = (version) => {
-    exec(`nvm install ${version}`, (err, stdOut, stdErr) => {
+    exec(`${nvmExe} install ${version}`, (err, stdOut, stdErr) => {
         getVersions();
     });
 };
 
 const uninstall = (version) => {
-    exec(`nvm uninstall ${version}`, (err, stdOut, stdErr) => {
+    exec(`${nvmExe} uninstall ${version}`, (err, stdOut, stdErr) => {
         getVersions();
     });
 };
 
 const setVersion = (version) => {
-    exec(`nvm use ${version}`, (err, stdOut, stdErr) => {
+    exec(`${nvmExe} use ${version}`, (err, stdOut, stdErr) => {
         setTimeout(() => {
             getVersions();
         }, 1000);
