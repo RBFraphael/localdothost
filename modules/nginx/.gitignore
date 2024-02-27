@@ -1,2 +1,6 @@
 *
 !.gitignore
+!conf/
+!conf/nginx.conf
+!conf/localdothost.conf
+!conf/php.conf
