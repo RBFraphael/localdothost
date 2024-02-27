@@ -1,13 +1,26 @@
 export interface IVersions {
-    gui: string;
-    apache: string;
-    php: Object;
-    composer: string;
-    mariadb: string;
-    heidisql: string;
     acrylic: string;
-    mongodb: string;
+    apache: string;
     compass: string;
+    composer: string;
+    git: string;
+    gui: string;
+    heidisql: string;
+    mariadb: string;
+    mongodb: string;
+    nginx: string;
     nvm: string;
+    php: {
+        "5.6"?: string;
+        "7.0"?: string;
+        "7.2"?: string;
+        "7.4"?: string;
+        "8.0"?: string;
+        "8.2"?: string;
+        "8.3"?: string;
+    };
+    phpmyadmin: string;
+    phppgadmin: string;
+    postgresql: string;
     redis: string;
 }

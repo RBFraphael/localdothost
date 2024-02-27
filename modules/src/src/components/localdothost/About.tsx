@@ -10,8 +10,9 @@ import { Modal } from "react-bootstrap";
 export default function About()
 {
     const [versions, setVersions] = useState<IVersions>({
-        gui: "", apache: "", php: {}, composer: "", mariadb: "",
-        heidisql: "", acrylic: "", mongodb: "", compass: "", nvm: "", redis: ""
+        gui: "", apache: "", php: {}, composer: "", mariadb: "", nginx: "",
+        heidisql: "", acrylic: "", mongodb: "", compass: "", nvm: "", redis: "",
+        postgresql: "", phppgadmin: "", phpmyadmin: "", git: ""
     });
     const [phpVersions, setPhpVersions] = useState<string[]>([]);
     const [latestVersion, setLatestVersion] = useState("");
@@ -118,7 +119,7 @@ export default function About()
                     </div>
                 </div>
 
-                <div className="row mb-3">
+                <div className="row mb-4">
                     <div className="col-12 d-flex flex-row gap-2 align-items-center justify-content-center">
                         { (updateCheckStatus == "" || updateCheckStatus == "updated" || updateCheckStatus == "error" || updateCheckStatus == "checking") && (
                             <button className="btn btn-primary btn-sm px-5" onClick={() => checkForUpdates()} disabled={updateCheckStatus == "checking"}>
@@ -160,16 +161,23 @@ export default function About()
                     <div className="col-4">
                         <p className="m-0"><strong>Apache:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.apache }</span></p>
                         <p className="m-0"><strong>PHP:</strong> { phpVersions.map((v) => ( <span className="badge text-bg-secondary rounded-pill">{ v }</span> )) } </p>
-                        <p className="m-0"><strong>Composer:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.composer }</span></p>
+                        <p className="m-0"><strong>NGINX:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.nginx }</span></p>
                         <p className="m-0"><strong>MariaDB:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.mariadb }</span></p>
-                        <p className="m-0"><strong>HeidiSQL:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.heidisql }</span></p>
+                        <p className="m-0"><strong>MongoDB:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.mongodb }</span></p>
                     </div>
                     <div className="col-4">
+                        <p className="m-0"><strong>PostgreSQL:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.postgresql }</span></p>
                         <p className="m-0"><strong>Redis:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.redis }</span></p>
-                        <p className="m-0"><strong>Acrylic DNS:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.acrylic }</span></p>
-                        <p className="m-0"><strong>MongoDB:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.mongodb }</span></p>
+                        <p className="m-0"><strong>HeidiSQL:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.heidisql }</span></p>
+                        <p className="m-0"><strong>phpMyAdmin:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.phpmyadmin }</span></p>
+                        <p className="m-0"><strong>phpPgAdmin:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.phppgadmin }</span></p>
                         <p className="m-0"><strong>MongoDB Compass:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.compass }</span></p>
+                    </div>
+                    <div className="col-3">
+                        <p className="m-0"><strong>Acrylic DNS:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.acrylic }</span></p>
                         <p className="m-0"><strong>NVM:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.nvm }</span></p>
+                        <p className="m-0"><strong>Git:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.git }</span></p>
+                        <p className="m-0"><strong>Composer:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.composer }</span></p>
                     </div>
                 </div>
             </div>
