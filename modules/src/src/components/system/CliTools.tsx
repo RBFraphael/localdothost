@@ -43,6 +43,10 @@ export default function CliTools()
                     <p>This includes the following commands:</p>
                     <ul className="list-inline">
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">composer</span></li>
+                        <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">mysql</span></li>
+                        <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">mysqldump</span></li>
+                        <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">psql</span></li>
+                        <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">pg_dump</span></li>
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">php</span></li>
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">php5.6</span></li>
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">php7.0</span></li>
@@ -51,8 +55,6 @@ export default function CliTools()
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">php8.0</span></li>
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">php8.2</span></li>
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">php8.3</span></li>
-                        <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">mysql</span></li>
-                        <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">mysqldump</span></li>
                         <li className="list-inline-item mb-1"><span className="badge bg-secondary font-monospace">redis</span></li>
                     </ul>
 
