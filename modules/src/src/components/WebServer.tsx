@@ -1,4 +1,3 @@
-import electron from "electron";
 import { Box, Button, CircularProgress, IconButton, List, ListItem, ListItemText, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import LinkIcon from "@mui/icons-material/Launch";
@@ -10,6 +9,7 @@ export default function WebServer()
     const [status, setStatus] = useState("stopped");
     const [listeningPorts, setListeningPorts] = useState<string[]>([]);
     const [pids, setPids] = useState<string[]>([]);
+    const [websites, setWebsites] = useState<string[]>([]);
 
     const [apacheSettingsAnchorEl, setApacheSettingsAnchorEl] = useState(null);
     const apacheSettingsOpen = Boolean(apacheSettingsAnchorEl);
@@ -67,14 +67,22 @@ export default function WebServer()
         window.ipcRenderer.on("apache-pids", (e: any, pids: string[]) => {
             setPids(pids);
         });
+
+        window.ipcRenderer.on("apache-websites", (e: any, websites: string[]) => {
+            setWebsites(websites);
+        });
     }, []);
+
+    const openWebsite = (site: string) => {
+        window.ipcRenderer.send("apache-open-website", site);
+    }
 
     return (
         <>
             <Box sx={{ width: "100%" }}>
                 <Typography variant="h5" sx={{ marginBottom: "1rem" }}>Web Server</Typography>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Box sx={{ width: "49%" }}>
+                    <Box sx={{ flexBasis: "49%" }}>
                         <Box sx={{ width: "100%", marginBottom: "1rem" }}>
                             { status == "stopped" && (
                                 <Button onClick={startWebServer} variant="contained" color="success">
@@ -138,11 +146,31 @@ export default function WebServer()
                                     <MenuItem onClick={() => onPhpSettingsClose("apache-config", "php74")}>PHP 7.4 &lt;php.ini&gt;</MenuItem>
                                     <MenuItem onClick={() => onPhpSettingsClose("apache-config", "php80")}>PHP 8.0 &lt;php.ini&gt;</MenuItem>
                                     <MenuItem onClick={() => onPhpSettingsClose("apache-config", "php82")}>PHP 8.2 &lt;php.ini&gt;</MenuItem>
+                                    <MenuItem onClick={() => onPhpSettingsClose("apache-config", "php83")}>PHP 8.3 &lt;php.ini&gt;</MenuItem>
                                     <MenuItem onClick={() => onPhpSettingsClose("apache-dir", "php")}>Open PHP directory</MenuItem>
                                 </Menu>
                             </Box>
                         </Box>
                     </Box>
+                    { status == "running" ? (
+                        <Box sx={{ flexBasis: "49%" }}>
+                            <Paper>
+                                <Typography sx={{ p: "0.5rem" }}>Websites:</Typography>
+                                <List sx={{ width: "100%", height: 350, overflow: "auto", '& ul': { padding: 0 } }} subheader={<li />} dense={true}>
+                                    { websites.map((site, index) => (
+                                        <ListItem key={index} secondaryAction={
+                                            <IconButton edge="end" aria-label="open" onClick={() => openWebsite(site)}>
+                                                <LinkIcon />
+                                            </IconButton>
+                                        }>
+                                            <ListItemText primary={`http://${site}`} />
+                                        </ListItem>
+                                        )
+                                    ) }
+                                </List>
+                            </Paper>
+                        </Box>
+                    ) : null }
                 </Box>
             </Box>
         </>

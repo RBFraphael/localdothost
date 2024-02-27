@@ -1,6 +1,7 @@
 const EventEmitter = require("events");
 const { getModulesDir } = require("../helpers/paths");
 const path = require("path");
+const fs = require("fs");
 const { spawn } = require("child_process");
 const { lookup, kill, listeningPorts } = require("../helpers/process");
 const { existsSync, rmSync } = require("fs");
@@ -11,6 +12,7 @@ const apacheExe = path.join(apacheDir, "/bin/httpd.exe");
 const apachePidFile = path.join(apacheDir, "/logs/httpd.pid");
 const apacheStatus = new EventEmitter();
 var process = null;
+var websites = [];
 
 const phpDir = path.join(getModulesDir(), "php");
 const docRoot = path.join(getModulesDir(), "../www");
@@ -85,6 +87,8 @@ const getStatus = () => {
             listeningPorts(process.pid, (ports) => {
                 apacheStatus.emit("ports", ports);
             });
+            listWebsites();
+            apacheStatus.emit("websites");
         } else {
             apacheStatus.emit("status", "stopped");
             apacheStatus.emit("pids", []);
@@ -95,6 +99,8 @@ const getStatus = () => {
             if(results.length >= 2){
                 apacheStatus.emit("status", "running");
                 getPids(results, true);
+                listWebsites();
+                apacheStatus.emit("websites");
             } else {
                 apacheStatus.emit("status", "stopped");
                 apacheStatus.emit("pids", []);
@@ -129,7 +135,8 @@ const openConfig = (config) => {
         'php72': path.join(phpDir, "7.2/php.ini"),
         'php74': path.join(phpDir, "7.4/php.ini"),
         'php80': path.join(phpDir, "8.0/php.ini"),
-        'php82': path.join(phpDir, "8.2/php.ini")
+        'php82': path.join(phpDir, "8.2/php.ini"),
+        'php83': path.join(phpDir, "8.3/php.ini"),
     };
 
     if(configFiles.hasOwnProperty(config)){
@@ -149,12 +156,70 @@ const openDir = (dir) => {
     }
 };
 
+const listWebsites = (dir = null, depth = 0) => {
+    if (depth > 3) { return; }
+
+    if (dir == null) {
+        websites = [];
+        dir = docRoot;
+    }
+    
+    let subdirs = [];
+
+    let dirFiles = fs.readdirSync(dir);
+    let dirHasIndex = false;
+
+    dirFiles.forEach((file) => {
+        let filePath = path.join(dir, file);
+        let fileStats = fs.statSync(filePath);
+
+        if (fileStats.isFile()) {
+            let fileExtension = path.extname(filePath);
+            let fileName = path.basename(filePath, fileExtension);
+
+            if (fileName == "index" && [".php", ".html", ".htm"].includes(fileExtension)) {
+                if (depth == 0) {
+                    websites.push("local.host");
+                } else {
+                    dirHasIndex = true;
+                
+                    let subdomain = [];
+                    let filePathSegments = path.dirname(filePath).split(path.sep);
+                    for (let i = 0; i < depth; i++) {
+                        subdomain.push(filePathSegments.pop());
+                    }
+                    
+                    websites.push(`${subdomain.join(".")}.local.host`);
+                }
+            }
+        } else if(fileStats.isDirectory()) {
+            subdirs.push(file);
+        }
+    });
+
+    if (!dirHasIndex) {
+        subdirs.forEach((subdir) => {
+            let subdirPath = path.join(dir, subdir);
+            listWebsites(subdirPath, depth + 1);
+        });
+    }
+}
+
+const openSite = (website) => {
+    shell.openExternal(`http://${website}`);
+}
+
 const init = (appWindow) => {
     ipcMain.on("apache", (e, action) => apache(action) );
     ipcMain.on("apache-boot", (e, autostart) => boot(autostart) );
     ipcMain.on("apache-status", (e) => getStatus() );
     ipcMain.on("apache-config", (e, config) => openConfig(config) );
-    ipcMain.on("apache-dir", (e, dir) => openDir(dir) );
+    ipcMain.on("apache-dir", (e, dir) => openDir(dir));
+    ipcMain.on("apache-websites", (e) => {
+        listWebsites();
+        apacheStatus.emit("websites");
+    });
+    ipcMain.on("apache-open-website", (e, site) => openSite(site));
 
     apacheStatus.on("status", (status) => {
         appWindow.webContents.send("apache-status", status);
@@ -164,6 +229,9 @@ const init = (appWindow) => {
     });
     apacheStatus.on("ports", (ports) => {
         appWindow.webContents.send("apache-ports", ports);
+    });
+    apacheStatus.on("websites", () => {
+        appWindow.webContents.send("apache-websites", websites);
     });
 };
 
