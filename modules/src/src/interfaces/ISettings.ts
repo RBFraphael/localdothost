@@ -4,6 +4,7 @@ export interface ISettings {
         mariadb: boolean;
         mongodb: boolean;
         redis: boolean;
+        postgres: boolean;
     },
     theme: "light"|"dark";
     closeToTray: boolean;

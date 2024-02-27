@@ -10,6 +10,7 @@ const extras = require("./modules/extras");
 const localhost = require("./modules/localhost");
 const tray = require("./modules/tray");
 const redis = require("./modules/redis");
+const postgres = require("./modules/postgresql");
 
 const appServe = app.isPackaged ? serve({
     directory: path.join(__dirname, "../out")
@@ -90,6 +91,7 @@ app.on("ready", () => {
     extras.init(appWindow);
     localhost.init(appWindow);
     redis.init(appWindow);
+    postgres.init(appWindow);
 });
 
 app.on("before-quit", () => {
@@ -101,4 +103,5 @@ app.on("before-quit", () => {
     extras.finish();
     localhost.finish();
     redis.finish();
+    postgres.finish();
 });
