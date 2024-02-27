@@ -1,6 +1,7 @@
 export interface ISettings {
     autostart: {
         apache: boolean;
+        nginx: boolean;
         mariadb: boolean;
         mongodb: boolean;
         redis: boolean;

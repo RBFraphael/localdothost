@@ -11,6 +11,7 @@ const localhost = require("./modules/localhost");
 const tray = require("./modules/tray");
 const redis = require("./modules/redis");
 const postgres = require("./modules/postgresql");
+const nginx = require("./modules/nginx");
 
 const appServe = app.isPackaged ? serve({
     directory: path.join(__dirname, "../out")
@@ -92,6 +93,7 @@ app.on("ready", () => {
     localhost.init(appWindow);
     redis.init(appWindow);
     postgres.init(appWindow);
+    nginx.init(appWindow);
 });
 
 app.on("before-quit", () => {
@@ -104,4 +106,5 @@ app.on("before-quit", () => {
     localhost.finish();
     redis.finish();
     postgres.finish();
+    nginx.finish();
 });
