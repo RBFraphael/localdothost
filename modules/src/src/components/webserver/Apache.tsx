@@ -10,13 +10,7 @@ export default function Apache()
     const [status, setStatus] = useState("stopped");
     const [listeningPorts, setListeningPorts] = useState<string[]>([]);
     const [pids, setPids] = useState<string[]>([]);
-    const [websites, setWebsites] = useState<string[]>([
-        "local.host",
-        "client.local.host",
-        "project.client.local.host",
-        "api.project.client.local.host",
-        "web.project.client.local.host",
-    ]);
+    const [websites, setWebsites] = useState<string[]>([]);
 
     const startWebServer = () => {
         window.ipcRenderer.send("apache", "start");

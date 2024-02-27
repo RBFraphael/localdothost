@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function NodeJS()
 {
-    const [status, setStatus] = useState("installed");
+    const [status, setStatus] = useState("uninstalled");
 
     const [installingVersion, setInstallingVersion] = useState<string|null>(null);
     const [uninstallingVersion, setUninstallingVersion] = useState<string|null>(null);

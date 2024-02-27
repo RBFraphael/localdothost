@@ -9,6 +9,13 @@ import AcrylicDNS from "@/components/system/AcrylicDNS";
 import Redis from "@/components/database/Redis";
 import CliTools from "@/components/system/CliTools";
 import NodeJS from "@/components/nodejs/NodeJS";
+import Git from "@/components/system/Git";
+import Recommended from "@/components/system/Recommended";
+import PostgreSQL from "@/components/database/PostgreSQL";
+import About from "@/components/localdothost/About";
+import Autostart from "@/components/localdothost/Autostart";
+import Settings from "@/components/localdothost/Settings";
+import Nginx from "@/components/webserver/Nginx";
 
 export default function Home() {
 
@@ -36,13 +43,12 @@ export default function Home() {
         { label: "Command-line Tools", value: "system.cli" },
         { label: "DNS", value: "system.dns" },
         { label: "Git", value: "system.git" },
-        { label: "Recommended Apps", value: "system.recommended" },
+        // { label: "Recommended Apps", value: "system.recommended" },
     ];
 
     let localHostOptions = [
         { label: "About", value: "localhost.about" },
         { label: "Autostart", value: "localhost.autostart" },
-        { label: "Help", value: "localhost.help" },
         { label: "Settings", value: "localhost.settings" },
     ];
 
@@ -71,15 +77,23 @@ export default function Home() {
 
             <main>
                 { currentPage == "web.apache" && ( <Apache /> ) }
+                { currentPage == "web.nginx" && ( <Nginx /> ) }
 
                 { currentPage == "database.mariadb" && ( <MariaDB /> ) }
                 { currentPage == "database.mongodb" && ( <MongoDB /> ) }
+                { currentPage == "database.postgresql" && ( <PostgreSQL /> ) }
                 { currentPage == "database.redis" && ( <Redis /> ) }
 
                 { currentPage == "system.cli" && ( <CliTools /> ) }
                 { currentPage == "system.dns" && ( <AcrylicDNS /> ) }
+                { currentPage == "system.git" && ( <Git /> ) }
+                { currentPage == "system.recommended" && ( <Recommended /> ) }
 
                 { currentPage == "nodejs" && ( <NodeJS /> ) }
+
+                { currentPage == "localhost.about" && ( <About /> ) }
+                { currentPage == "localhost.autostart" && ( <Autostart /> ) }
+                { currentPage == "localhost.settings" && ( <Settings /> ) }
             </main>
         </div>
     );
