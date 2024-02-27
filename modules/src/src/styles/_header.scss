@@ -1,0 +1,16 @@
+header {
+    background: linear-gradient(to right, #382a9a 0%, #741eb1 100%);
+}
+
+.dropdown.hoverable:hover {
+    .dropdown-menu {
+        display: block;
+        margin-top: 0;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

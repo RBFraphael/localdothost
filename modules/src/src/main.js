@@ -19,7 +19,7 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 870,
         height: 580,
-        title: "Local.Host",
+        title: "Local.Host Admin Panel",
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         },

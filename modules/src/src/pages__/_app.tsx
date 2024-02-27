@@ -1,6 +1,5 @@
 import { ColorModeContextProvider } from '@/contexts/ColorModeContext'
 import type { AppProps } from 'next/app'
-import "@/styles/main.scss";
 
 declare global {
     interface Window {

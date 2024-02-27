@@ -39,18 +39,18 @@ export default function Extras()
                     <Box sx={{ flexBasis: "50%" }}>
                         <Box sx={{width: "100%", marginBottom: "1rem"}}>
                             <Typography variant="h6" sx={{ marginBottom: "0.5rem" }}>This includes the following commands:</Typography>
-                            <Chip label="composer" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php5.6" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php7.0" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php7.2" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php7.4" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php8.0" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php8.2" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="php8.3" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="mysql" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="mysqldump" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
-                            <Chip label="redis" size="small" sx={{ m: "0.2rem", fontFamily: "monospace" }} />
+                            <Chip label="composer" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php5.6" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php7.0" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php7.2" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php7.4" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php8.0" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php8.2" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="php8.3" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="mysql" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="mysqldump" size="small" sx={{ fontFamily: "monospace" }} />
+                            <Chip label="redis" size="small" sx={{ fontFamily: "monospace" }} />
                         </Box>
 
                         <Typography variant="body1" sx={{ marginBottom: "0.5rem" }}>
