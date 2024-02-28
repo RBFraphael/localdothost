@@ -25,6 +25,10 @@ export default function Home() {
     useEffect(() => {
         let menu = currentPage.split(".")[0];
         setSelectedMenu(menu);
+
+        window.ipcRenderer.on("tab", (e: any, tab: string) => {
+            setCurrentPage(tab);
+        });
     }, [currentPage]);
 
     let webServerOptions = [

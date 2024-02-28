@@ -11,28 +11,46 @@ const init = (appWindow) => {
 
         const contextMenu = Menu.buildFromTemplate([
             {
-                label: "Web Server",
-                click: () => { restoreOnTab(appWindow, "web"); }
+                label: "Apache Web Server",
+                click: () => { restoreOnTab(appWindow, "web.apache"); }
             },
             {
-                label: "Database",
-                click: () => { restoreOnTab(appWindow, "database"); }
+                label: "NGINX Web Server",
+                click: () => { restoreOnTab(appWindow, "web.nginx"); }
+            },
+            { type: "separator" },
+            {
+                label: "MariaDB/MySQL Database",
+                click: () => { restoreOnTab(appWindow, "database.mariadb"); }
             },
             {
-                label: "Redis",
-                click: () => { restoreOnTab(appWindow, "redis"); }
+                label: "MongoDB Database",
+                click: () => { restoreOnTab(appWindow, "database.mongodb"); }
             },
             {
-                label: "MongoDB",
-                click: () => { restoreOnTab(appWindow, "mongodb"); }
+                label: "PostgreSQL Database",
+                click: () => { restoreOnTab(appWindow, "database.postgresql"); }
+            },
+            {
+                label: "Redis Database",
+                click: () => { restoreOnTab(appWindow, "database.redis"); }
+            },
+            { type: "separator" },
+            {
+                label: "NodeJS",
+                click: () => { restoreOnTab(appWindow, "nodejs"); }
+            },
+            {
+                label: "CLI Tools",
+                click: () => { restoreOnTab(appWindow, "system.cli"); }
             },
             {
                 label: "DNS",
-                click: () => { restoreOnTab(appWindow, "dns"); }
+                click: () => { restoreOnTab(appWindow, "system.dns"); }
             },
             {
-                label: "NodeJS",
-                click: () => { restoreOnTab(appWindow, "node"); }
+                label: "Git",
+                click: () => { restoreOnTab(appWindow, "system.git"); }
             },
             {
                 type: "separator"
@@ -42,8 +60,16 @@ const init = (appWindow) => {
                 click: () => { appWindow.show(); }
             },
             {
-                label: 'Local.Host Settings',
-                click: () => { restoreOnTab(appWindow, "settings") }
+                label: "About",
+                click: () => { restoreOnTab(appWindow, "localhost.about"); }
+            },
+            {
+                label: "Autostart",
+                click: () => { restoreOnTab(appWindow, "localhost.autostart"); }
+            },
+            {
+                label: "Settings",
+                click: () => { restoreOnTab(appWindow, "localhost.settings"); }
             },
             {
                 label: 'Exit Local.Host',
