@@ -6,10 +6,13 @@ const axios = require("axios");
 const config = require("../../../config.json");
 const { spawn } = require("child_process");
 const { ipcMain, app, shell } = require("electron");
+const regedit = require("regedit").promisified;
+const elevate = require("windows-elevate");
 
 const updatePackage = path.join(getModulesDir(), "../update.exe");
 const versionsFile = path.join(getModulesDir(), "versions.json");
 const appSettings = path.join(app.getPath("appData"), "settings.json");
+const symlinkDir = path.join(getModulesDir(), "symlink");
 const localhostStatus = new EventEmitter();
 
 var versions = null;
@@ -164,9 +167,6 @@ const loadSettings = (booting = false) => {
         let data = fs.readFileSync(appSettings);
         let loadedSettings = JSON.parse(data);
 
-        let appSettings = app.getLoginItemSettings();
-        loadedSettings.startOnBoot = appSettings.openAtLogin;
-
         settings = {
             ...settings,
             ...loadedSettings
@@ -175,7 +175,7 @@ const loadSettings = (booting = false) => {
 
     localhostStatus.emit("settings", settings);
     return settings;
-}
+};
 
 const onlineHelp = () => {
     shell.openExternal("https://github.com/RBFraphael/localdothost/wiki");
@@ -184,6 +184,41 @@ const onlineHelp = () => {
 const repository = () => {
     shell.openExternal("https://github.com/RBFraphael/localdothost");
 };
+
+const addContextMenuOptions = async () => {
+    localhostStatus.emit("context-menu", "adding");
+
+    elevate.exec("regedit", ["/S", path.join(symlinkDir, "add_context_menu.reg")], (err, stdout, stderr) => {
+        if(err){
+            localhostStatus.emit("context-menu", "removed");
+        } else {
+            localhostStatus.emit("context-menu", "added");
+        }
+    });
+};
+
+const removeContextMenuOptions = async () => {
+    localhostStatus.emit("context-menu", "removing");
+
+    elevate.exec("regedit", ["/S", path.join(symlinkDir, "remove_context_menu.reg")], (err, stdout, stderr) => {
+        if(err){
+            localhostStatus.emit("context-menu", "added");
+        } else {
+            localhostStatus.emit("context-menu", "removed");
+        }
+    });
+};
+
+const checkContextMenu = async () => {
+    let shellKeys = await regedit.list("HKCR\\Directory\\shell");
+    let inShell = false;
+    if(shellKeys){
+        let keys = shellKeys['HKCR\\Directory\\shell'].keys;
+        inShell = keys.indexOf("localhost_symlink_dir") > -1;
+    }
+
+    gitStatus.emit("context-menu", inShell ? "added" : "removed");
+}
 
 const init = (appWindow) => {
     ipcMain.on("localhost-boot", (e) => { loadSettings(true); });
@@ -194,6 +229,7 @@ const init = (appWindow) => {
     ipcMain.on("localhost-settings", (e, settings) => { saveSettings(settings); });
     ipcMain.on("localhost-help", (e) => { onlineHelp(); });
     ipcMain.on("localhost-repository", (e) => { repository(); });
+    ipcMain.on("localhost-context-menu", (e, action) => { action === "add" ? addContextMenuOptions() : removeContextMenuOptions(); });
 
     localhostStatus.on("status", (status) => {
         appWindow.webContents.send("localhost-status", status);
@@ -213,6 +249,10 @@ const init = (appWindow) => {
 
     localhostStatus.on("init", (settings) => {
         appWindow.webContents.send("localhost-init", settings);
+    });
+
+    localhostStatus.on("context-menu", (status) => {
+        appWindow.webContents.send("localhost-context-menu", status);
     });
 };
 
