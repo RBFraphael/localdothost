@@ -160,7 +160,7 @@ export default function About()
                 <div className="row mb-3 justify-content-center">
                     <div className="col-4">
                         <p className="m-0"><strong>Apache:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.apache }</span></p>
-                        <p className="m-0"><strong>PHP:</strong> { phpVersions.map((v) => ( <span className="badge text-bg-secondary rounded-pill">{ v }</span> )) } </p>
+                        <p className="m-0"><strong>PHP:</strong> { phpVersions.map((v, i) => ( <span key={i} className="badge text-bg-secondary rounded-pill">{ v }</span> )) } </p>
                         <p className="m-0"><strong>NGINX:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.nginx }</span></p>
                         <p className="m-0"><strong>MariaDB:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.mariadb }</span></p>
                         <p className="m-0"><strong>MongoDB:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.mongodb }</span></p>
@@ -193,7 +193,7 @@ export default function About()
 
             <Modal show={showUpdateDialog} onHide={installUpdate} centered className="shadow border-0" backdrop="static" animation={false}>
                 <Modal.Body>
-                    <p>Before installing the update, we recommend you to stop all running services. Also, if you have made some modifications on one or more files of Local.Host's modules, you need to backup them before applying the update, and re-applying your modified files after the update.</p>
+                    <p>Before installing the update, we recommend you to stop all running services. Also, if you have made some modifications on one or more files of Local.Host&apos;s modules, you need to backup them before applying the update, and re-applying your modified files after the update.</p>
                 </Modal.Body>
                 <Modal.Footer className="border-0">
                     <button className="btn btn-outline-light btn-sm border-0" onClick={installUpdate}>Ok, install {latestVersion}</button>
