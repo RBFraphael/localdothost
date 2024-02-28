@@ -78,7 +78,8 @@ const createWindow = () => {
         let settings = localhost.loadSettings();
         if(settings.closeToTray && !app.isQuiting){
             event.preventDefault();
-            tray.init(win);
+            // tray.init(win);
+            win.minimize();
             return false;
         } else {
             app.quit();
