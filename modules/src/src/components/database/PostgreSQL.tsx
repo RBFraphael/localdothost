@@ -1,7 +1,8 @@
 import { ISettings } from "@/interfaces/ISettings";
-import { faPlay, faStop, faSquareUpRight, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faStop, faSquareUpRight, faCircle, faCog, faDatabase } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { Dropdown } from "react-bootstrap";
 
 export default function PostgreSQL()
 {
@@ -27,7 +28,7 @@ export default function PostgreSQL()
         }
     }
 
-    const onPmaSettingsClose = (option: string|null = null, action: string|null = null) => {
+    const onAdminSettingsClose = (option: string|null = null, action: string|null = null) => {
         if(option !== null && action !== null){
             window.ipcRenderer.send(option, action);
         }
@@ -111,6 +112,28 @@ export default function PostgreSQL()
                                 <><strong>PID:</strong> { pids.join(", ") }</>
                             ) }
                         </p>
+                    </div>
+
+                    <div className="mb-3 d-flex flex-row gap-2">
+                        <Dropdown>
+                            <Dropdown.Toggle className="btn-secondary btn-sm px-5">
+                                <FontAwesomeIcon icon={faCog} fixedWidth /> Settings
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="shadow">
+                                <Dropdown.Item className="text-uppercase small" onClick={() => onPostgresdbSettingsClose("postgres-config", "postgres")}>PostgreSQL config &lt;postgresql.cnf&gt;</Dropdown.Item>
+                                <Dropdown.Item className="text-uppercase small" onClick={() => onPostgresdbSettingsClose("postgres-dir", "postgres")}>Open PostgreSQL directory</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                        <Dropdown>
+                            <Dropdown.Toggle className="btn-secondary btn-sm px-5">
+                                <FontAwesomeIcon icon={faDatabase} fixedWidth /> phpPgAdmin Settings
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="shadow">
+                                <Dropdown.Item className="text-uppercase small" onClick={() => onAdminSettingsClose("postgres-config", "phppgadmin")}>phpPgAdmin config &lt;config.inc.php&gt;</Dropdown.Item>
+                                <Dropdown.Item className="text-uppercase small" onClick={() => onAdminSettingsClose("postgres-dir", "phppgadmin")}>Open phpPgAdmin directory</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </div>
                 </div>
             </div>

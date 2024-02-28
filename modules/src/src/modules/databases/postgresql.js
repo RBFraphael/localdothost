@@ -100,7 +100,7 @@ const openConfig = (config) => {
             shell.openPath(path.join(postgresDataDir, "/postgresql.conf"));
             break;
         case "phppgadmin":
-            shell.openPath(path.join(getModulesDir(), "/phppgadmin/config.inc.php"));
+            shell.openPath(path.join(getModulesDir(), "/phppgadmin/conf/config.inc.php"));
             break;
     }
 };
