@@ -1,11 +1,12 @@
 const EventEmitter = require("events");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const { spawn } = require("child_process");
-const { lookup, kill, listeningPorts } = require("../helpers/process");
+const { lookup, kill, listeningPorts } = require("../../helpers/process");
 const path = require("path");
 const { hostname } = require("os");
 const { existsSync, rmSync } = require("fs");
 const { shell, ipcMain } = require("electron");
+const { loadSettings } = require("../localdothost/localhost");
 
 const mariadbDir = path.join(getModulesDir(), "mariadb");
 const mariadbExe = path.join(mariadbDir, "/bin/mariadbd.exe");
@@ -159,6 +160,9 @@ const init = (appWindow) => {
     mariadbStatus.on("ports", (ports) => {
         appWindow.webContents.send("mariadb-ports", ports);
     });
+
+    let settings = loadSettings();
+    boot(settings.autostart.mariadb);
 };
 
 const finish = () => {

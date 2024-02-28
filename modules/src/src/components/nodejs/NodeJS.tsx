@@ -89,6 +89,10 @@ export default function NodeJS()
         });
     }, []);
 
+    useEffect(() => {
+        console.log(currentVersion);
+    }, [currentVersion]);
+
     return (
         <div className="container-fluid">
             <div className="row mb-3">

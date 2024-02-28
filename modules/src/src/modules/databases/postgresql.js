@@ -1,11 +1,12 @@
 const EventEmitter = require("events");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const { spawn, execSync, exec } = require("child_process");
-const { lookup, kill, listeningPorts } = require("../helpers/process");
+const { lookup, kill, listeningPorts } = require("../../helpers/process");
 const path = require("path");
 const { hostname } = require("os");
 const { existsSync, rmSync } = require("fs");
 const { shell, ipcMain } = require("electron");
+const { loadSettings } = require("../localdothost/localhost");
 
 const postgresDir = path.join(getModulesDir(), "postgresql");
 const postgresExe = path.join(postgresDir, "/bin/pg_ctl.exe");
@@ -131,6 +132,9 @@ const init = (appWindow) => {
     postgresStatus.on("ports", (ports) => {
         appWindow.webContents.send("postgres-ports", ports);
     });
+
+    let settings = loadSettings();
+    boot(settings.autostart.postgres);
 };
 
 const finish = () => {

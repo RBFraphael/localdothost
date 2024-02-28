@@ -10,4 +10,6 @@ export interface ISettings {
     theme: "light"|"dark";
     closeToTray: boolean;
     minimizeToTray: boolean;
+    startOnBoot: boolean;
+    startMinimized: boolean;
 };

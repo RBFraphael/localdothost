@@ -7,7 +7,7 @@ const init = (appWindow) => {
     appWindow.hide();
 
     if(!tray){
-        tray = new Tray(path.join(__dirname, "../../icon.ico"));
+        tray = new Tray(path.join(__dirname, "../../../icon.ico"));
 
         const contextMenu = Menu.buildFromTemplate([
             {

@@ -1,11 +1,12 @@
 const EventEmitter = require("events");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const path = require("path");
 const fs = require("fs");
 const { spawn } = require("child_process");
-const { lookup, kill, listeningPorts } = require("../helpers/process");
+const { lookup, kill, listeningPorts } = require("../../helpers/process");
 const { existsSync, rmSync } = require("fs");
 const { ipcMain, shell } = require("electron");
+const { loadSettings } = require("../localdothost/localhost");
 
 const apacheDir = path.join(getModulesDir(), "apache");
 const apacheExe = path.join(apacheDir, "/bin/httpd.exe");
@@ -233,6 +234,9 @@ const init = (appWindow) => {
     apacheStatus.on("websites", () => {
         appWindow.webContents.send("apache-websites", websites);
     });
+
+    let settings = loadSettings();
+    boot(settings.autostart.apache);
 };
 
 const finish = () => {

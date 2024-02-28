@@ -1,8 +1,8 @@
 const path = require("path");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const EventEmitter = require("events");
 const { shell, ipcMain } = require("electron");
-const { lookup, listeningPorts } = require("../helpers/process");
+const { lookup, listeningPorts } = require("../../helpers/process");
 const { exec } = require("child_process");
 
 const acrylicDir = path.join(getModulesDir(), "acrylic");

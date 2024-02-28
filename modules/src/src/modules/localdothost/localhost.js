@@ -1,9 +1,9 @@
 const path = require("path");
 const fs = require("fs");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const EventEmitter = require("events");
 const axios = require("axios");
-const config = require("../../config.json");
+const config = require("../../../config.json");
 const { spawn } = require("child_process");
 const { ipcMain, app, shell } = require("electron");
 
@@ -135,6 +135,10 @@ const installUpdatePackage = (appWindow) => {
 };
 
 const saveSettings = (settings) => {
+    app.setLoginItemSettings({
+        openAtLogin: settings.startOnBoot
+    });
+
     fs.writeFileSync(appSettings, JSON.stringify(settings));
     loadSettings();
 };
@@ -143,18 +147,25 @@ const loadSettings = (booting = false) => {
     let settings = {
         autostart: {
             apache: false,
+            nginx: false,
             mariadb: false,
             mongodb: false,
+            postgres: false,
             redis: false
         },
         theme: "light",
         closeToTray: false,
-        minimizeToTray: false
+        minimizeToTray: false,
+        startMinimized: false,
+        startOnBoot: false,
     };
 
     if(fs.existsSync(appSettings)){
         let data = fs.readFileSync(appSettings);
         let loadedSettings = JSON.parse(data);
+
+        let appSettings = app.getLoginItemSettings();
+        loadedSettings.startOnBoot = appSettings.openAtLogin;
 
         settings = {
             ...settings,
@@ -162,7 +173,7 @@ const loadSettings = (booting = false) => {
         };
     }
 
-    localhostStatus.emit(booting ? "init" : "settings", settings);
+    localhostStatus.emit("settings", settings);
     return settings;
 }
 

@@ -1,6 +1,6 @@
 const { EventEmitter } = require("events");
-const { getVar, setVar, removeVar, getPath, setPath } = require("../helpers/envvars");
-const { getModulesDir } = require("../helpers/paths");
+const { getVar, setVar, removeVar, getPath, setPath } = require("../../helpers/envvars");
+const { getModulesDir } = require("../../helpers/paths");
 const { exec } = require("child_process");
 const { existsSync, readdirSync, rmSync } = require("fs");
 const path = require("path");

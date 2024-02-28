@@ -1,9 +1,10 @@
 const path = require("path");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const { spawn } = require("child_process");
 const EventEmitter = require("events");
-const { lookup, kill, listeningPorts } = require("../helpers/process");
+const { lookup, kill, listeningPorts } = require("../../helpers/process");
 const { shell, ipcMain } = require("electron");
+const { loadSettings } = require("../localdothost/localhost");
 
 const redisDir = path.join(getModulesDir(), "/redis");
 const redisExe = path.join(redisDir, "/redis-server.exe");
@@ -128,6 +129,9 @@ const init = (appWindow) => {
     redisStatus.on("ports", (ports) => {
         appWindow.webContents.send("redis-ports", ports);
     });
+
+    let settings = loadSettings();
+    boot(settings.autostart.redis);
 };
 
 const finish = () => {

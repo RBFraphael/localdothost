@@ -1,23 +1,31 @@
 const { app, BrowserWindow, Menu } = require("electron");
 const serve = require("electron-serve");
 const path = require("path");
-const dns = require("./modules/dns");
-const webServer = require("./modules/web-server");
-const database = require("./modules/database");
-const mongodb = require("./modules/mongodb");
-const node = require("./modules/node");
-const extras = require("./modules/extras");
-const localhost = require("./modules/localhost");
-const tray = require("./modules/tray");
-const redis = require("./modules/redis");
-const postgres = require("./modules/postgresql");
-const nginx = require("./modules/nginx");
+
+const apache = require("./modules/webservers/apache");
+const nginx = require("./modules/webservers/nginx");
+
+const mariadb = require("./modules/databases/mariadb");
+const mongodb = require("./modules/databases/mongodb");
+const postgres = require("./modules/databases/postgresql");
+const redis = require("./modules/databases/redis");
+
+const acrylic = require("./modules/system/acrylic");
+const cli = require("./modules/system/cli");
+const git = require("./modules/system/git");
+
+const node = require("./modules/nodejs/node");
+
+const localhost = require("./modules/localdothost/localhost");
+const tray = require("./modules/localdothost/tray");
 
 const appServe = app.isPackaged ? serve({
     directory: path.join(__dirname, "../out")
 }) : null;
 
 const createWindow = () => {
+    let settings = localhost.loadSettings();
+
     const win = new BrowserWindow({
         width: 870,
         height: 580,
@@ -25,8 +33,13 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(__dirname, "preload.js")
         },
-        resizable: false
+        resizable: false,
+        show: !settings.startMinimized,
     });
+
+    if(settings.startMinimized){
+        tray.init(win);
+    }
 
     Menu.setApplicationMenu(null);
 
@@ -84,27 +97,37 @@ app.on("ready", () => {
 
     let appWindow = createWindow();
 
-    dns.init(appWindow);
-    webServer.init(appWindow);
-    database.init(appWindow);
-    mongodb.init(appWindow);
-    node.init(appWindow);
-    extras.init(appWindow);
-    localhost.init(appWindow);
-    redis.init(appWindow);
-    postgres.init(appWindow);
+    apache.init(appWindow);
     nginx.init(appWindow);
+
+    mariadb.init(appWindow);
+    mongodb.init(appWindow);
+    postgres.init(appWindow);
+    redis.init(appWindow);
+
+    acrylic.init(appWindow);
+    cli.init(appWindow);
+    git.init(appWindow);
+    
+    node.init(appWindow);
+
+    localhost.init(appWindow);
 });
 
 app.on("before-quit", () => {
-    dns.finish();
-    webServer.finish();
-    database.finish();
-    mongodb.finish();
-    node.finish();
-    extras.finish();
-    localhost.finish();
-    redis.finish();
-    postgres.finish();
+    apache.finish();
     nginx.finish();
+
+    mariadb.finish();
+    mongodb.finish();
+    postgres.finish();
+    redis.finish();
+
+    acrylic.finish();
+    cli.finish();
+    git.finish();
+
+    node.finish();
+    
+    localhost.finish();
 });

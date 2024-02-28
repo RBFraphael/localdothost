@@ -4,12 +4,12 @@ copyright: "Copyright (c) 2023 RBFraphael"
 win:
   target: ["dir"]
   icon: "icon.ico"
-files:
-  - from: .
-    filter:
-      - main
-      - out
-      - config.json
-      - icon.ico
-      - package.json
+# files:
+#   - from: .
+#     filter:
+#       - main
+#       - out
+#       - config.json
+#       - icon.ico
+#       - package.json
 afterPack: "./build/afterPack.js"

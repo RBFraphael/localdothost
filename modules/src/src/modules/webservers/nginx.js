@@ -1,11 +1,12 @@
 const EventEmitter = require("events");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const path = require("path");
 const fs = require("fs");
 const { spawn, exec } = require("child_process");
-const { lookup, kill, listeningPorts } = require("../helpers/process");
+const { lookup, kill, listeningPorts } = require("../../helpers/process");
 const { existsSync, rmSync } = require("fs");
 const { ipcMain, shell } = require("electron");
+const { loadSettings } = require("../localdothost/localhost");
 
 const nginxDir = path.join(getModulesDir(), "nginx");
 const nginxExe = path.join(nginxDir, "/nginx.exe");
@@ -215,6 +216,9 @@ const init = (appWindow) => {
     nginxStatus.on("websites", () => {
         appWindow.webContents.send("nginx-websites", websites);
     });
+
+    let settings = loadSettings();
+    boot(settings.autostart.nginx);
 };
 
 const finish = () => {

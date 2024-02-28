@@ -1,9 +1,10 @@
 const path = require("path");
-const { getModulesDir } = require("../helpers/paths");
+const { getModulesDir } = require("../../helpers/paths");
 const { spawn } = require("child_process");
 const EventEmitter = require("events");
-const { lookup, kill, listeningPorts } = require("../helpers/process");
+const { lookup, kill, listeningPorts } = require("../../helpers/process");
 const { shell, ipcMain } = require("electron");
+const { loadSettings } = require("../localdothost/localhost");
 
 const mongodbDir = path.join(getModulesDir(), "/mongodb");
 const mongodbExe = path.join(mongodbDir, "/bin/mongod.exe");
@@ -141,6 +142,9 @@ const init = (appWindow) => {
     mongodbStatus.on("ports", (ports) => {
         appWindow.webContents.send("mongodb-ports", ports);
     });
+
+    let settings = loadSettings();
+    boot(settings.autostart.mongodb);
 };
 
 const finish = () => {

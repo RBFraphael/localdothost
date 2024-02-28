@@ -1,2 +1,5 @@
 *
 !.gitignore
+!registry/
+!registry/add_context_menu.reg
+!registry/remove_context_menu.reg
