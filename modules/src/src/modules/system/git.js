@@ -5,6 +5,8 @@ const EventEmitter = require("events");
 const { ipcMain } = require("electron");
 const regedit = require("regedit").promisified;
 const elevate = require("windows-elevate");
+const crypto = require("crypto");
+const fs = require("fs");
 
 const gitDir = path.join(getModulesDir(), "/git");
 const pathPaths = [
@@ -15,7 +17,6 @@ const pathPaths = [
     path.join(gitDir, "/usr/bin/vendor_perl"),
     path.join(gitDir, "/usr/bin/core_perl"),
 ];
-const registryPath = path.join(gitDir, "registry");
 const gitStatus = new EventEmitter();
 
 const git = (action) => {
@@ -112,10 +113,67 @@ const checkContextMenu = async () => {
     gitStatus.emit("context-menu", (inShell && inBackground) ? "added" : "removed");
 }
 
+const addWindowsTerminalProfile = () => {
+    let gitBashExecutable = path.join(gitDir, "bin/bash.exe");
+    let gitBashIcon = path.join(gitDir, "mingw64/share/git/git-for-windows.ico");
+
+    let profile = {
+        commandline: gitBashExecutable,
+        guid: `{${crypto.randomUUID()}}`,
+        hidden: false,
+        name: "Git Bash",
+        icon: gitBashIcon
+    };
+
+    let packagesDir = path.join(process.env.LOCALAPPDATA, "Packages");
+    let packagesDirContent = fs.readdirSync(packagesDir);
+
+    let terminalDir = null;
+    packagesDirContent.forEach((item) => {
+        if (item.includes("Microsoft.WindowsTerminal")) {
+            terminalDir = path.join(packagesDir, item, "LocalState");
+        }
+    });
+
+    if (terminalDir) {
+        let settingsFile = path.join(terminalDir, "settings.json");
+
+        let rawSettings = fs.readFileSync(settingsFile);
+        let settings = JSON.parse(rawSettings);
+
+        let hasGitTerminal = false;
+        let gitTerminalIndex = -1;
+        settings.profiles.list.forEach((profileItem, index) => {
+            if (profileItem.name.toLowerCase().includes("git bash")) {
+                gitTerminalIndex = index;
+                profile.guid = profileItem.guid;
+                hasGitTerminal = true;
+            }
+        });
+
+        if (hasGitTerminal) {
+            settings.profiles.list[gitTerminalIndex] = profile;
+        } else {
+            settings.profiles.list.push(profile);
+        }
+
+        fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 4));
+
+        if(hasGitTerminal){
+            gitStatus.emit("terminal-profile", "Successfully updated Windows Terminal profile.");
+        } else {
+            gitStatus.emit("terminal-profile", "Successfully added Windows Terminal profile.");
+        }
+    } else {
+        gitStatus.emit("terminal-profile", "Could not find Windows Terminal directory. Please install Windows Terminal first.");
+    }
+};
+
 const init = (appWindow) => {
     ipcMain.on("git", (e, action) => { git(action); });
     ipcMain.on("git-status", (e) => { getStatus(); });
     ipcMain.on("git-context-menu", (e, action) => { action === "add" ? addContextMenuOptions() : removeContextMenuOptions(); });
+    ipcMain.on("git-add-terminal-profile", (e) => { addWindowsTerminalProfile(); });
 
     gitStatus.on("status", (status) => {
         appWindow.webContents.send("git-status", status);
@@ -123,6 +181,10 @@ const init = (appWindow) => {
 
     gitStatus.on("context-menu", (status) => {
         appWindow.webContents.send("git-context-menu", status);
+    });
+
+    gitStatus.on("terminal-profile", (status) => {
+        appWindow.webContents.send("git-terminal-profile", status);
     });
 };
 
