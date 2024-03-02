@@ -132,7 +132,7 @@ export default function Git()
                 </div>
             </div>
 
-            <Modal show={showDialog} onHide={closeDialog} centered className="shadow border-0" backdrop="static" animation={false}>
+            <Modal show={showDialog} onHide={closeDialog} centered className="shadow border-0" backdrop="static" animation={true}>
                 <Modal.Body>
                     <p>{ dialogText }</p>
                 </Modal.Body>

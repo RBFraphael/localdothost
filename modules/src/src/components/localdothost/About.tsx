@@ -83,10 +83,8 @@ export default function About()
         if(updateCheckStatus == "available"){
             if(userUpdateCheck){
                 setDialogText(`There's a new version available to download: ${latestVersion}`);
-            } else {
-                setDialogText(`There's a new version available to download: ${latestVersion}. Go to About tab to download and install this update.`);
+                setShowDialog(true);
             }
-            setShowDialog(true);
         }
 
         if(updateCheckStatus == "ready"){
@@ -182,7 +180,7 @@ export default function About()
                 </div>
             </div>
 
-            <Modal show={showDialog} onHide={closeDialog} centered className="shadow border-0" backdrop="static" animation={false}>
+            <Modal show={showDialog} onHide={closeDialog} centered className="shadow border-0" backdrop="static" animation={true}>
                 <Modal.Body>
                     <p>{ dialogText }</p>
                 </Modal.Body>
@@ -191,7 +189,7 @@ export default function About()
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={showUpdateDialog} onHide={installUpdate} centered className="shadow border-0" backdrop="static" animation={false}>
+            <Modal show={showUpdateDialog} onHide={installUpdate} centered className="shadow border-0" backdrop="static" animation={true}>
                 <Modal.Body>
                     <p>Before installing the update, we recommend you to stop all running services. Also, if you have made some modifications on one or more files of Local.Host&apos;s modules, you need to backup them before applying the update, and re-applying your modified files after the update.</p>
                 </Modal.Body>
