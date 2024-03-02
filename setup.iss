@@ -22,11 +22,14 @@ DefaultDirName=C:\local.host
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
+; TODO: Change the line above pointing to the LICENSE.txt file on your computer
 LicenseFile=C:\local.host\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
+; TODO: Change the line above pointing to the directory you want to save the installer file
 OutputDir=C:\
 OutputBaseFilename=Local.Host_1.9.0_Setup
+; TODO: Change the line above pointing to the icon.ico file on your computer
 SetupIconFile=C:\Git\localdothost\modules\src\icon.ico
 Compression=lzma
 SolidCompression=yes
@@ -44,6 +47,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
+; TODO: Change the line above pointing to the root directory of the final Local.Host on your computer
 Source: "C:\local.host\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
