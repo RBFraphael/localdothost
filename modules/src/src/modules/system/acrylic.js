@@ -8,6 +8,7 @@ const { exec } = require("child_process");
 const acrylicDir = path.join(getModulesDir(), "acrylic");
 const acrylicExe = path.join(acrylicDir, "AcrylicUI.exe");
 const acrylicStatus = new EventEmitter();
+const dnsCli = path.join(getModulesDir(), "tools/dns.exe");
 
 var serverInterval = null;
 var serviceInterval = null;
@@ -121,6 +122,26 @@ const getPids = (processes, checkPorts = false) => {
     if(checkPorts){ getPorts(pids); }
 }
 
+const setSystemDns = () => {
+    exec(`${dnsCli} c 127.0.0.1`, (err, stdout, stderr) => {
+        if(err){
+            acrylicStatus.emit("dns", "set-error");
+        } else {
+            acrylicStatus.emit("dns", "set");
+        }
+    });
+};
+
+const resetSystemDns = () => {
+    exec(`${dnsCli} r`, (err, stdout, stderr) => {
+        if(err){
+            acrylicStatus.emit("dns", "reset-error");
+        } else {
+            acrylicStatus.emit("dns", "reset");
+        }
+    });
+};
+
 const init = (appWindow) => {
     ipcMain.on("acrylic-server", (e, action) => server(action) );
     ipcMain.on("acrylic-service", (e, action) => service(action) );
@@ -128,6 +149,8 @@ const init = (appWindow) => {
     ipcMain.on("acrylic-dir", (e) => openDir() );
     ipcMain.on("acrylic-server-status", (e) => getServerStatus() );
     ipcMain.on("acrylic-service-status", (e) => getServiceStatus() );
+    ipcMain.on("acrylic-dns-set", (e) => setSystemDns() );
+    ipcMain.on("acrylic-dns-reset", (e) => resetSystemDns() );
 
     acrylicStatus.on("server-status", (status) => {
         appWindow.webContents.send("acrylic-server-status", status);
@@ -146,6 +169,9 @@ const init = (appWindow) => {
     });
     acrylicStatus.on("ports", (ports) => {
         appWindow.webContents.send("acrylic-ports", ports);
+    });
+    acrylicStatus.on("dns", (status) => {
+        appWindow.webContents.send("acrylic-dns", status);
     });
 };
 
