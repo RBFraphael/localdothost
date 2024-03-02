@@ -62,7 +62,7 @@ const postgres = (action) => {
             getStatus();
             break;
         case "open":
-            shell.openExternal("http://localhost/phppgadmin");
+            // TODO: open pgAdmin
             break;
     }
 };
@@ -99,9 +99,6 @@ const openConfig = (config) => {
         case "postgres":
             shell.openPath(path.join(postgresDataDir, "/postgresql.conf"));
             break;
-        case "phppgadmin":
-            shell.openPath(path.join(getModulesDir(), "/phppgadmin/conf/config.inc.php"));
-            break;
     }
 };
 
@@ -109,9 +106,6 @@ const openDir = (dir) => {
     switch(dir){
         case "postgres":
             shell.openPath(postgresDir);
-            break;
-        case "phppgadmin":
-            shell.openPath(path.join(getModulesDir(), "/phppgadmin"));
             break;
     }
 };

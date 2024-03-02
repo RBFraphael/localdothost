@@ -20,7 +20,7 @@ export interface IVersions {
         "8.3"?: string;
     };
     phpmyadmin: string;
-    phppgadmin: string;
     postgresql: string;
     redis: string;
+    redisgui: string;
 }

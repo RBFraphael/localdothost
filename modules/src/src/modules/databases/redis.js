@@ -9,6 +9,8 @@ const { loadSettings } = require("../localdothost/localhost");
 const redisDir = path.join(getModulesDir(), "/redis");
 const redisExe = path.join(redisDir, "/redis-server.exe");
 const redisConfig = path.join(redisDir, "/redis.conf");
+const redisGuiDir = path.join(getModulesDir(), "/redis-gui");
+const redisGuiExe = path.join(redisGuiDir, "/Redis GUI.exe");
 const redisStatus = new EventEmitter();
 
 var process = null;
@@ -57,6 +59,9 @@ const redis = (action) => {
                     });
                 });
             }
+            break;
+        case "open":
+            spawn(redisGuiExe, {detached: true});
             break;
         case "status":
             getStatus();

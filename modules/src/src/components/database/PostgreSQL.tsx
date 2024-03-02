@@ -124,16 +124,6 @@ export default function PostgreSQL()
                                 <Dropdown.Item className="text-uppercase small" onClick={() => onPostgresdbSettingsClose("postgres-dir", "postgres")}>Open PostgreSQL directory</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-
-                        <Dropdown>
-                            <Dropdown.Toggle className="btn-secondary btn-sm px-5">
-                                <FontAwesomeIcon icon={faDatabase} fixedWidth /> phpPgAdmin Settings
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="shadow">
-                                <Dropdown.Item className="text-uppercase small" onClick={() => onAdminSettingsClose("postgres-config", "phppgadmin")}>phpPgAdmin config &lt;config.inc.php&gt;</Dropdown.Item>
-                                <Dropdown.Item className="text-uppercase small" onClick={() => onAdminSettingsClose("postgres-dir", "phppgadmin")}>Open phpPgAdmin directory</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
                     </div>
                 </div>
             </div>

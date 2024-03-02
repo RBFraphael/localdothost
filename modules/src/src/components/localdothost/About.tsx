@@ -12,7 +12,7 @@ export default function About()
     const [versions, setVersions] = useState<IVersions>({
         gui: "", apache: "", php: {}, composer: "", mariadb: "", nginx: "",
         heidisql: "", acrylic: "", mongodb: "", compass: "", nvm: "", redis: "",
-        postgresql: "", phppgadmin: "", phpmyadmin: "", git: ""
+        postgresql: "", phpmyadmin: "", git: "", redisgui: ""
     });
     const [phpVersions, setPhpVersions] = useState<string[]>([]);
     const [latestVersion, setLatestVersion] = useState("");
@@ -168,9 +168,9 @@ export default function About()
                     <div className="col-4">
                         <p className="m-0"><strong>PostgreSQL:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.postgresql }</span></p>
                         <p className="m-0"><strong>Redis:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.redis }</span></p>
+                        <p className="m-0"><strong>Redis GUI:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.redisgui }</span></p>
                         <p className="m-0"><strong>HeidiSQL:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.heidisql }</span></p>
                         <p className="m-0"><strong>phpMyAdmin:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.phpmyadmin }</span></p>
-                        <p className="m-0"><strong>phpPgAdmin:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.phppgadmin }</span></p>
                         <p className="m-0"><strong>MongoDB Compass:</strong> <span className="badge text-bg-secondary rounded-pill">{ versions.compass }</span></p>
                     </div>
                     <div className="col-3">

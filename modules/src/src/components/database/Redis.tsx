@@ -1,5 +1,5 @@
 import { ISettings } from "@/interfaces/ISettings";
-import { faCircle, faCog, faPlay, faStop } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faCog, faPlay, faSquareUpRight, faStop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { Dropdown } from "react-bootstrap";
@@ -17,6 +17,10 @@ export default function Redis()
     const stopRedis = () => {
         window.ipcRenderer.send("redis", "stop");
     }
+
+    const openRedisGui = () => {
+        window.ipcRenderer.send("redis", "open");
+    };
 
     const onRedisSettingsClose = (option: string|null = null, action: string|null = null) => {
         if(option !== null && action !== null){
@@ -62,6 +66,9 @@ export default function Redis()
                         ) }
                         { status == "running" && (
                             <>
+                                <button className="btn btn-sm btn-primary px-5" onClick={openRedisGui}>
+                                    <FontAwesomeIcon icon={faSquareUpRight} fixedWidth /> Browse
+                                </button>
                                 <button className="btn btn-sm btn-danger px-5" onClick={stopRedis}>
                                     <FontAwesomeIcon icon={faStop} fixedWidth /> Stop
                                 </button>
