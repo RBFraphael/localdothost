@@ -4,15 +4,14 @@ const { getModulesDir } = require("../../helpers/paths");
 const EventEmitter = require("events");
 const axios = require("axios");
 const config = require("../../../config.json");
-const { spawn } = require("child_process");
+const { spawn, exec } = require("child_process");
 const { ipcMain, app, shell } = require("electron");
 const regedit = require("regedit").promisified;
-const elevate = require("windows-elevate");
 
 const updatePackage = path.join(getModulesDir(), "../update.exe");
 const versionsFile = path.join(getModulesDir(), "versions.json");
 const appSettings = path.join(app.getPath("appData"), "settings.json");
-const symlinkDir = path.join(getModulesDir(), "symlink");
+const contextMenuExe = path.join(getModulesDir(), "tools/context-menu.exe");
 const localhostStatus = new EventEmitter();
 
 var versions = null;
@@ -188,7 +187,7 @@ const repository = () => {
 const addContextMenuOptions = async () => {
     localhostStatus.emit("context-menu", "adding");
 
-    elevate.exec("regedit", ["/S", path.join(symlinkDir, "add_context_menu.reg")], (err, stdout, stderr) => {
+    exec(`${contextMenuExe} symlink add`, (err, stdout, stderr) => {
         if(err){
             localhostStatus.emit("context-menu", "removed");
         } else {
@@ -200,7 +199,7 @@ const addContextMenuOptions = async () => {
 const removeContextMenuOptions = async () => {
     localhostStatus.emit("context-menu", "removing");
 
-    elevate.exec("regedit", ["/S", path.join(symlinkDir, "remove_context_menu.reg")], (err, stdout, stderr) => {
+    exec(`${contextMenuExe} symlink remove`, (err, stdout, stderr) => {
         if(err){
             localhostStatus.emit("context-menu", "added");
         } else {
