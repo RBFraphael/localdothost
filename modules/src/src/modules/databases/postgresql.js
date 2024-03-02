@@ -14,6 +14,9 @@ const postgresInstallerExe = path.join(postgresDir, "/bin/initdb.exe");
 const postgresDataDir = path.join(postgresDir, `/data`);
 const postgresStatus = new EventEmitter();
 
+const pgAdminDir = path.join(postgresDir, "pgAdmin 4");
+const pgAdminExe = path.join(pgAdminDir, "/runtime/pgAdmin4.exe");
+
 var postgresInterval = null;
 
 const boot = (autostart = false) => {
@@ -62,7 +65,7 @@ const postgres = (action) => {
             getStatus();
             break;
         case "open":
-            // TODO: open pgAdmin
+            spawn(pgAdminExe, { detached: true });
             break;
     }
 };
@@ -106,6 +109,9 @@ const openDir = (dir) => {
     switch(dir){
         case "postgres":
             shell.openPath(postgresDir);
+            break;
+        case "pgadmin":
+            shell.openPath(pgAdminDir);
             break;
     }
 };

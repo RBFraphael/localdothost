@@ -122,6 +122,7 @@ export default function PostgreSQL()
                             <Dropdown.Menu className="shadow">
                                 <Dropdown.Item className="text-uppercase small" onClick={() => onPostgresdbSettingsClose("postgres-config", "postgres")}>PostgreSQL config &lt;postgresql.cnf&gt;</Dropdown.Item>
                                 <Dropdown.Item className="text-uppercase small" onClick={() => onPostgresdbSettingsClose("postgres-dir", "postgres")}>Open PostgreSQL directory</Dropdown.Item>
+                                <Dropdown.Item className="text-uppercase small" onClick={() => onPostgresdbSettingsClose("postgres-dir", "pgadmin")}>Open pgAdmin 4 directory</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
