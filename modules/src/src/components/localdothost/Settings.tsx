@@ -18,6 +18,7 @@ export default function Settings()
 
     useEffect(() => {
         window.ipcRenderer.send("localhost-boot");
+        window.ipcRenderer.send("localhost-context-menu-status");
 
         window.ipcRenderer.on("localhost-context-menu", (e: any, status: string) => {
             setContextMenu(status);

@@ -188,11 +188,7 @@ const addContextMenuOptions = async () => {
     localhostStatus.emit("context-menu", "adding");
 
     exec(`${contextMenuExe} symlink add`, (err, stdout, stderr) => {
-        if(err){
-            localhostStatus.emit("context-menu", "removed");
-        } else {
-            localhostStatus.emit("context-menu", "added");
-        }
+        checkContextMenu();
     });
 };
 
@@ -200,11 +196,7 @@ const removeContextMenuOptions = async () => {
     localhostStatus.emit("context-menu", "removing");
 
     exec(`${contextMenuExe} symlink remove`, (err, stdout, stderr) => {
-        if(err){
-            localhostStatus.emit("context-menu", "added");
-        } else {
-            localhostStatus.emit("context-menu", "removed");
-        }
+        checkContextMenu();
     });
 };
 
@@ -216,7 +208,7 @@ const checkContextMenu = async () => {
         inShell = keys.indexOf("localhost_symlink_dir") > -1;
     }
 
-    gitStatus.emit("context-menu", inShell ? "added" : "removed");
+    localhostStatus.emit("context-menu", inShell ? "added" : "removed");
 }
 
 const init = (appWindow) => {
@@ -229,6 +221,7 @@ const init = (appWindow) => {
     ipcMain.on("localhost-help", (e) => { onlineHelp(); });
     ipcMain.on("localhost-repository", (e) => { repository(); });
     ipcMain.on("localhost-context-menu", (e, action) => { action === "add" ? addContextMenuOptions() : removeContextMenuOptions(); });
+    ipcMain.on("localhost-context-menu-status", (e) => { checkContextMenu(); });
 
     localhostStatus.on("status", (status) => {
         appWindow.webContents.send("localhost-status", status);
