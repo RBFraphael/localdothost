@@ -70,6 +70,7 @@ const getStatus = () => {
     });
 
     checkContextMenu();
+    checkTerminalProfile();
 };
 
 const addContextMenuOptions = async () => {
@@ -113,6 +114,20 @@ const checkContextMenu = async () => {
 
     gitStatus.emit("context-menu", (inShell && inBackground) ? "added" : "removed");
 }
+
+const terminalProfile = (action) => {
+    switch(action){
+        case "add":
+            addWindowsTerminalProfile();
+            break;
+        case "remove":
+            removeWindowsTerminalProfile();
+            break;
+        case "status":
+            checkTerminalProfile();
+            break;
+    }
+};
 
 const addWindowsTerminalProfile = () => {
     let gitBashExecutable = path.join(gitDir, "bin/bash.exe");
@@ -161,20 +176,83 @@ const addWindowsTerminalProfile = () => {
         fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 4));
 
         if(hasGitTerminal){
-            gitStatus.emit("terminal-profile", "Successfully updated Windows Terminal profile.");
+            gitStatus.emit("terminal-profile", "updated");
         } else {
-            gitStatus.emit("terminal-profile", "Successfully added Windows Terminal profile.");
+            gitStatus.emit("terminal-profile", "added");
         }
     } else {
-        gitStatus.emit("terminal-profile", "Could not find Windows Terminal directory. Please install Windows Terminal first.");
+        gitStatus.emit("terminal-profile", "not-found");
     }
+};
+
+const checkTerminalProfile = () => {
+    let packagesDir = path.join(process.env.LOCALAPPDATA, "Packages");
+    let packagesDirContent = fs.readdirSync(packagesDir);
+
+    let terminalDir = null;
+    packagesDirContent.forEach((item) => {
+        if (item.includes("Microsoft.WindowsTerminal")) {
+            terminalDir = path.join(packagesDir, item, "LocalState");
+        }
+    });
+
+    if (terminalDir) {
+        let settingsFile = path.join(terminalDir, "settings.json");
+
+        let rawSettings = fs.readFileSync(settingsFile);
+        let settings = JSON.parse(rawSettings);
+
+        let hasGitTerminal = false;
+        settings.profiles.list.forEach((profileItem) => {
+            if (profileItem.name.toLowerCase().includes("git bash")) {
+                hasGitTerminal = true;
+            }
+        });
+
+        gitStatus.emit("terminal-profile", hasGitTerminal ? "added" : "removed");
+    } else {
+        gitStatus.emit("terminal-profile", "not-found");
+    }
+};
+
+const removeWindowsTerminalProfile = () => {
+    let packagesDir = path.join(process.env.LOCALAPPDATA, "Packages");
+    let packagesDirContent = fs.readdirSync(packagesDir);
+
+    let terminalDir = null;
+    packagesDirContent.forEach((item) => {
+        if (item.includes("Microsoft.WindowsTerminal")) {
+            terminalDir = path.join(packagesDir, item, "LocalState");
+        }
+    });
+
+    if (terminalDir) {
+        let settingsFile = path.join(terminalDir, "settings.json");
+
+        let rawSettings = fs.readFileSync(settingsFile);
+        let settings = JSON.parse(rawSettings);
+
+        let gitTerminalIndex = -1;
+        settings.profiles.list.forEach((profileItem, index) => {
+            if (profileItem.name.toLowerCase().includes("git bash")) {
+                gitTerminalIndex = index;
+            }
+        });
+
+        if (gitTerminalIndex > -1) {
+            settings.profiles.list.splice(gitTerminalIndex, 1);
+            fs.writeFileSync(settingsFile, JSON.stringify(settings, null, 4));
+        }
+    }
+
+    checkTerminalProfile();
 };
 
 const init = (appWindow) => {
     ipcMain.on("git", (e, action) => { git(action); });
     ipcMain.on("git-status", (e) => { getStatus(); });
     ipcMain.on("git-context-menu", (e, action) => { action === "add" ? addContextMenuOptions() : removeContextMenuOptions(); });
-    ipcMain.on("git-add-terminal-profile", (e) => { addWindowsTerminalProfile(); });
+    ipcMain.on("git-terminal-profile", (e, action) => { terminalProfile(action); });
 
     gitStatus.on("status", (status) => {
         appWindow.webContents.send("git-status", status);

@@ -10,6 +10,7 @@ export default function Git()
     
     const [showDialog, setShowDialog] = useState(false);
     const [dialogText, setDialogText] = useState("");
+    const [terminalStatus, setTerminalStatus] = useState("removed");
 
     const install = () => {
         window.ipcRenderer.send("git", "install");
@@ -28,7 +29,11 @@ export default function Git()
     }
 
     const addWindowsTerminalProfile = () => {
-        window.ipcRenderer.send("git-add-terminal-profile");
+        window.ipcRenderer.send("git-terminal-profile", "add");
+    }
+
+    const removeWindowsTerminalProfile = () => {
+        window.ipcRenderer.send("git-terminal-profile", "remove");
     }
 
     const closeDialog = () => {
@@ -37,6 +42,7 @@ export default function Git()
 
     useEffect(() => {
         window.ipcRenderer.send("git-status");
+        window.ipcRenderer.send("git-terminal-profile", "status");
 
         window.ipcRenderer.on("git-status", (e: any, status: string) => {
             setStatus(status);
@@ -46,9 +52,24 @@ export default function Git()
             setContextMenu(status);
         });
 
-        window.ipcRenderer.on("git-terminal-profile", (e: any, statusMessage: string) => {
-            setDialogText(statusMessage);
-            setShowDialog(true);
+        window.ipcRenderer.on("git-terminal-profile", (e: any, status: string) => {
+            setTerminalStatus(status);
+
+            // let statusMessage = "";
+            // switch(status) {
+            //     case "added":
+            //         statusMessage = "Windows Terminal profile added successfully.";
+            //         break;
+            //     case "removed":
+            //         statusMessage = "Windows Terminal profile removed successfully.";
+            //         break;
+            //     case "not-found":
+            //         statusMessage = "Windows Terminal profile not found. Please install Windows Terminal and open it at least one time before adding the profile.";
+            //         break;
+            // }
+
+            // setDialogText(statusMessage);
+            // setShowDialog(true);
         });
     }, []);
 
@@ -122,14 +143,22 @@ export default function Git()
                     </div>
                 </div>
 
+                { terminalStatus !== "not-found" && (
                 <div className="row">
                     <div className="col-12">
                         <h4>Windows Terminal Profile</h4>
-                        <button className="btn btn-sm btn-success px-5" onClick={addWindowsTerminalProfile}>
-                            <FontAwesomeIcon icon={faAdd} fixedWidth /> Add Windows Terminal profile for Git Bash
-                        </button>
+                        { terminalStatus == "added" ? (
+                            <button className="btn btn-sm btn-danger px-5" onClick={removeWindowsTerminalProfile}>
+                                <FontAwesomeIcon icon={faTimes} fixedWidth /> Remove Windows Terminal profile for Git Bash
+                            </button>
+                        ) : (
+                            <button className="btn btn-sm btn-success px-5" onClick={addWindowsTerminalProfile}>
+                                <FontAwesomeIcon icon={faAdd} fixedWidth /> Add Windows Terminal profile for Git Bash
+                            </button>
+                        )}
                     </div>
                 </div>
+                ) }
             </div>
 
             <Modal show={showDialog} onHide={closeDialog} centered className="shadow border-0" backdrop="static" animation={true}>
