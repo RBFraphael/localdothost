@@ -154,6 +154,11 @@ const addWindowsTerminalProfile = () => {
     if (terminalDir) {
         let settingsFile = path.join(terminalDir, "settings.json");
 
+        if(!fs.existsSync(settingsFile)){
+            gitStatus.emit("terminal-profile", "not-found");
+            return;
+        }
+
         let rawSettings = fs.readFileSync(settingsFile);
         let settings = JSON.parse(rawSettings);
 
@@ -199,6 +204,11 @@ const checkTerminalProfile = () => {
     if (terminalDir) {
         let settingsFile = path.join(terminalDir, "settings.json");
 
+        if(!fs.existsSync(settingsFile)){
+            gitStatus.emit("terminal-profile", "not-found");
+            return;
+        }
+
         let rawSettings = fs.readFileSync(settingsFile);
         let settings = JSON.parse(rawSettings);
 
@@ -228,6 +238,11 @@ const removeWindowsTerminalProfile = () => {
 
     if (terminalDir) {
         let settingsFile = path.join(terminalDir, "settings.json");
+
+        if(!fs.existsSync(settingsFile)){
+            gitStatus.emit("terminal-profile", "not-found");
+            return;
+        }
 
         let rawSettings = fs.readFileSync(settingsFile);
         let settings = JSON.parse(rawSettings);
