@@ -28,7 +28,7 @@ LicenseFile=C:\local.host\LICENSE.txt
 ;PrivilegesRequired=lowest
 ; TODO: Change the line above pointing to the directory you want to save the installer file
 OutputDir=C:\
-OutputBaseFilename=Local.Host_1.9.0_Setup
+OutputBaseFilename=Local.Host_1.9.0_Setup_x64
 ; TODO: Change the line above pointing to the icon.ico file on your computer
 SetupIconFile=C:\Git\localdothost\modules\src\icon.ico
 Compression=lzma
@@ -36,9 +36,13 @@ SolidCompression=yes
 WizardStyle=modern
 
 [Registry]
-Root: HKCR; Subkey: "Directory\shell\localhost_symlink_dir"; ValueType: string; ValueName: ""; ValueData: "Create Local.Host Symbolic Link"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Directory\shell\localhost_symlink_dir"; ValueType: string; ValueName: ""; ValueData: "Create Local.Host Link"; Flags: uninsdeletekey
 Root: HKCR; Subkey: "Directory\shell\localhost_symlink_dir"; ValueType: string; ValueName: "Icon"; ValueData: "C:\local.host\modules\gui\Local.Host.exe"; Flags: uninsdeletekey
-Root: HKCR; Subkey: "Directory\shell\localhost_symlink_dir\command"; ValueType: string; ValueName: ""; ValueData: """C:\local.host\modules\symlink\symlink.cmd"" -d ""%1"""; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Directory\shell\localhost_symlink_dir\command"; ValueType: string; ValueName: ""; ValueData: """C:\local.host\modules\tools\symlink.exe"" d ""%1"""; Flags: uninsdeletekey
+
+Root: HKCR; Subkey: "Directory\Background\shell\localhost_symlink_dir"; ValueType: string; ValueName: ""; ValueData: "Create Local.Host Link"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Directory\Background\shell\localhost_symlink_dir"; ValueType: string; ValueName: "Icon"; ValueData: "C:\local.host\modules\gui\Local.Host.exe"; Flags: uninsdeletekey
+Root: HKCR; Subkey: "Directory\Background\shell\localhost_symlink_dir\command"; ValueType: string; ValueName: ""; ValueData: """C:\local.host\modules\tools\symlink.exe"" d ""%v."""; Flags: uninsdeletekey
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
