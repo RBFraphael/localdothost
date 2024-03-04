@@ -173,6 +173,7 @@ const loadSettings = (booting = false) => {
     }
 
     localhostStatus.emit("settings", settings);
+    checkContextMenu();
     return settings;
 };
 
@@ -208,8 +209,15 @@ const checkContextMenu = async () => {
         inShell = keys.indexOf("localhost_symlink_dir") > -1;
     }
 
-    localhostStatus.emit("context-menu", inShell ? "added" : "removed");
-}
+    let backgroundKeys = await regedit.list("HKCR\\Directory\\Background\\shell");
+    let inBackground = false;
+    if(backgroundKeys){
+        let keys = backgroundKeys['HKCR\\Directory\\Background\\shell'].keys;
+        inBackground = keys.indexOf("localhost_symlink_dir") > -1;
+    }
+
+    localhostStatus.emit("context-menu", (inShell && inBackground) ? "added" : "removed");
+};
 
 const init = (appWindow) => {
     ipcMain.on("localhost-boot", (e) => { loadSettings(true); });
