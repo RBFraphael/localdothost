@@ -66,11 +66,11 @@ export default function Redis()
                         ) }
                         { status == "running" && (
                             <>
-                                <button className="btn btn-sm btn-primary px-5" onClick={openRedisGui}>
-                                    <FontAwesomeIcon icon={faSquareUpRight} fixedWidth /> Browse
-                                </button>
                                 <button className="btn btn-sm btn-danger px-5" onClick={stopRedis}>
                                     <FontAwesomeIcon icon={faStop} fixedWidth /> Stop
+                                </button>
+                                <button className="btn btn-sm btn-primary px-5" onClick={openRedisGui}>
+                                    <FontAwesomeIcon icon={faSquareUpRight} fixedWidth /> Browse
                                 </button>
                             </>
                         ) }
