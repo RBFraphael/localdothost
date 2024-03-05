@@ -4,7 +4,7 @@
     "compass": "1.42.1",
     "composer": "2.7.1",
     "git": "2.44.0",
-    "gui": "1.9.0",
+    "gui": "1.9.1",
     "heidisql": "12.6",
     "mariadb": "11.3.2",
     "mongodb": "7.0.5",

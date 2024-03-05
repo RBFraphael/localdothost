@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faQuestionCircle, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { Modal } from "react-bootstrap";
+import { stat } from "fs";
 
 export default function About()
 {
@@ -19,6 +20,8 @@ export default function About()
     const [updateCheckStatus, setUpdateCheckStatus] = useState("");
     const [userUpdateCheck, setUserUpdateCheck] = useState(false);
     const [isDownloadingUpdate, setIsDownloadingUpdate] = useState(false);
+    const [downloadPercentage, setDownloadPercentage] = useState(0);
+    const [releasePage, setReleasePage] = useState("");
 
     const [showDialog, setShowDialog] = useState(false);
     const [dialogText, setDialogText] = useState("");
@@ -63,12 +66,16 @@ export default function About()
             setPhpVersions(Object.values(versions.php));
         });
 
-        window.ipcRenderer.on("localhost-status", (e: any, status: string) => {
+        window.ipcRenderer.on("localhost-status", (e: any, status: string, percentage: number = 0) => {
             setUpdateCheckStatus(status);
+            if(status == "downloading"){
+                setDownloadPercentage(percentage ?? 0);
+            }
         });
 
-        window.ipcRenderer.on("localhost-available", (e: any, version: string) => {
+        window.ipcRenderer.on("localhost-available", (e: any, version: string, url: string = "") => {
             setLatestVersion(version);
+            setReleasePage(url);
         });
     }, []);
 
@@ -99,6 +106,10 @@ export default function About()
             };
         }
     }, [updateCheckStatus]);
+
+    const openReleasePage = () => {
+        window.ipcRenderer.send("localhost-open-release-page", releasePage);
+    };
     
     return (
         <>
@@ -132,7 +143,7 @@ export default function About()
                         { (updateCheckStatus == "available" || updateCheckStatus == "downloading") && (
                             <button className="btn btn-primary btn-sm px-5" onClick={() => downloadLatestVersion()} disabled={updateCheckStatus == "downloading"}>
                                 { updateCheckStatus == "downloading" ? (
-                                    <><span className="spinner-border spinner-border-sm"></span> Downloading...</>
+                                    <><span className="spinner-border spinner-border-sm"></span> Downloading... { downloadPercentage }%</>
                                 ) : (
                                     <><FontAwesomeIcon icon={faDownload} fixedWidth /> Download version { latestVersion }</>
                                 ) }
@@ -185,6 +196,9 @@ export default function About()
                     <p>{ dialogText }</p>
                 </Modal.Body>
                 <Modal.Footer className="border-0">
+                    { updateCheckStatus == "available" && (
+                        <button className="btn btn-outline-light btn-sm border-0" onClick={openReleasePage}>View release info</button>
+                    )}
                     <button className="btn btn-outline-light btn-sm border-0" onClick={closeDialog}>Ok</button>
                 </Modal.Footer>
             </Modal>

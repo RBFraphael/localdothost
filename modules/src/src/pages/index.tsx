@@ -28,6 +28,7 @@ export default function Home() {
     const [latestVersion, setLatestVersion] = useState("");
     const [updateCheckStatus, setUpdateCheckStatus] = useState("");
     const [checked, setChecked] = useState(false);
+    const [releasePage, setReleasePage] = useState("");
 
     useEffect(() => {
         window.ipcRenderer.send("localhost-check-for-updates");
@@ -36,8 +37,9 @@ export default function Home() {
             setUpdateCheckStatus(status);
         });
 
-        window.ipcRenderer.on("localhost-available", (e: any, version: string) => {
+        window.ipcRenderer.on("localhost-available", (e: any, version: string, url: string = "") => {
             setLatestVersion(version);
+            setReleasePage(url);
         });
     }, []);
 
@@ -91,6 +93,10 @@ export default function Home() {
         setShowDialog(false);
     };
 
+    const openReleasePage = () => {
+        window.ipcRenderer.send("localhost-open-release-page", releasePage);
+    };
+
     return (
         <>
             <div className="home">
@@ -138,6 +144,7 @@ export default function Home() {
                     <p>{ dialogText }</p>
                 </Modal.Body>
                 <Modal.Footer className="border-0">
+                    <button className="btn btn-outline-light btn-sm border-0" onClick={openReleasePage}>View release info</button>
                     <button className="btn btn-outline-light btn-sm border-0" onClick={closeDialog}>Ok</button>
                 </Modal.Footer>
             </Modal>

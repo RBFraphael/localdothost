@@ -15,7 +15,7 @@ const contextMenuExe = path.join(getModulesDir(), "tools/context-menu.exe");
 const localhostStatus = new EventEmitter();
 
 var versions = null;
-var repoVersions = null;
+var repoVersion = null;
 
 const localhost = (action) => {
     switch(action){
@@ -56,8 +56,9 @@ const checkForUpdates = (downloadLatest = false) => {
             let latestVersion = parseInt(latestRelease.name.replace(/\D/g, ""));
 
             if(latestVersion > currentVersion){
+                repoVersion = latestRelease;
                 localhostStatus.emit("available", latestRelease.name);
-                localhostStatus.emit("status", "available");
+                localhostStatus.emit("status", "available", latestRelease.html_url);
                 
                 if(downloadLatest){
                     downloadLatestRelease();
@@ -71,14 +72,21 @@ const checkForUpdates = (downloadLatest = false) => {
     }
 };
 
+const openReleasePage = (url) => {
+    if(url){
+        shell.openExternal(url);
+    } else if(repoVersion){
+        shell.openExternal(repoVersion.html_url);
+    }
+};
+
 const downloadLatestRelease = async () => {
-    if(repoVersions == null){
+    if(repoVersion == null){
         checkForUpdates(true);
     } else {
-        let latestRelease = repoVersions[0];
         let hasUpdatePackage = false;
 
-        latestRelease.assets.forEach((asset) => {
+        repoVersion.assets.forEach((asset) => {
             if(asset.name == "update.exe"){
                 if(fs.existsSync(updatePackage)){ fs.unlinkSync(updatePackage); }
                 
@@ -90,7 +98,11 @@ const downloadLatestRelease = async () => {
                 axios({
                     method: "GET",
                     url: asset.browser_download_url,
-                    responseType: "stream"
+                    responseType: "stream",
+                    onDownloadProgress: (progressEvent) => {
+                        let percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                        localhostStatus.emit("status", "downloading", percent);
+                    }
                 }).then((res) => {
                     return new Promise((resolve, reject) => {
                         res.data.pipe(updateFile);
@@ -230,9 +242,10 @@ const init = (appWindow) => {
     ipcMain.on("localhost-repository", (e) => { repository(); });
     ipcMain.on("localhost-context-menu", (e, action) => { action === "add" ? addContextMenuOptions() : removeContextMenuOptions(); });
     ipcMain.on("localhost-context-menu-status", (e) => { checkContextMenu(); });
+    ipcMain.on("localhost-open-release-page", (e, url) => { openReleasePage(url); });
 
-    localhostStatus.on("status", (status) => {
-        appWindow.webContents.send("localhost-status", status);
+    localhostStatus.on("status", (status, percentage = null) => {
+        appWindow.webContents.send("localhost-status", status, percentage);
     });
 
     localhostStatus.on("versions", (versions) => {
