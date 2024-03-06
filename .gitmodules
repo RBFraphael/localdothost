@@ -1,0 +1,12 @@
+[submodule "src/gui"]
+	path = src/gui
+	url = git@github.com:rbfraphael/localdothost-gui
+[submodule "src/tools/context-menu"]
+	path = src/tools/context-menu
+	url = git@github.com:rbfraphael/localdothost-context-menu
+[submodule "src/tools/symlink"]
+	path = src/tools/symlink
+	url = git@github.com:rbfraphael/localdothost-symlink
+[submodule "src/tools/dns"]
+	path = src/tools/dns
+	url = git@github.com:rbfraphael/localdothost-dns
